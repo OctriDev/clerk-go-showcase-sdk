@@ -9,39 +9,6 @@ import (
 	"fmt"
 )
 
-type SchemaSchema_db46323d struct {
-	Data []Directory `json:"data"`
-	// TotalCount Total number of directories.
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_db46323d) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_db46323dAlias SchemaSchema_db46323d
-	var decoded SchemaSchema_db46323dAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_db46323d(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_db46323d returns a validated SchemaSchema_db46323d built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_db46323d(fields SchemaSchema_db46323d) (*SchemaSchema_db46323d, error) {
-	return ConstructModel(fields)
-}
-
 type CreateDirectoryGroupRoleMappings struct {
 	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
 	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
@@ -99,39 +66,6 @@ func NewCreateDirectoryGroupRoleMappings(fields CreateDirectoryGroupRoleMappings
 	return ConstructModel(fields)
 }
 
-type SchemaSchema_1459c10b struct {
-	Data []DirectoryGroupRoleMapping `json:"data"`
-	// TotalCount Total number of directory group role mappings in the directory.
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_1459c10b) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_1459c10bAlias SchemaSchema_1459c10b
-	var decoded SchemaSchema_1459c10bAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_1459c10b(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_1459c10b returns a validated SchemaSchema_1459c10b built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_1459c10b(fields SchemaSchema_1459c10b) (*SchemaSchema_1459c10b, error) {
-	return ConstructModel(fields)
-}
-
 type ReplaceDirectoryGroupRoleMappingsMappings struct {
 	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
 	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
@@ -168,49 +102,6 @@ func NewReplaceDirectoryGroupRoleMappingsMappings(fields ReplaceDirectoryGroupRo
 	return ConstructModel(fields)
 }
 
-type SchemaSchema_0a4178a1 struct {
-	// Object String representing the object's type.
-	Object SchemaSchemaObjectEnum `json:"object"`
-	// Id The ID of the deleted directory group role mapping.
-	Id string `json:"id"`
-	// Deleted Whether the directory group role mapping was successfully deleted.
-	Deleted bool `json:"deleted"`
-}
-
-func (value *SchemaSchema_0a4178a1) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_0a4178a1Alias SchemaSchema_0a4178a1
-	var decoded SchemaSchema_0a4178a1Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_0a4178a1(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_0a4178a1 returns a validated SchemaSchema_0a4178a1 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_0a4178a1(fields SchemaSchema_0a4178a1) (*SchemaSchema_0a4178a1, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum String representing the object's type.
-type SchemaSchemaObjectEnum string
-
-const (
-	SchemaSchemaObjectEnumDirectoryGroupRoleMapping SchemaSchemaObjectEnum = "directory_group_role_mapping"
-)
-
 type ListDirectoriesParams struct {
 	Limit  *int64
 	Offset *int64
@@ -224,7 +115,7 @@ type ListDirectoriesParams struct {
 //	paginating the results together with `offset`.
 //	offset: Skip the first `offset` results when paginating. Needs to be an
 //	integer greater or equal to zero. To be used in conjunction with `limit`.
-func ListDirectories(ctx context.Context, clientConfig ClientConfig, params ListDirectoriesParams, opts ...RequestOption) (*SchemaSchema_db46323d, error) {
+func ListDirectories(ctx context.Context, clientConfig ClientConfig, params ListDirectoriesParams, opts ...RequestOption) (*DirectoryList, error) {
 	limit := params.Limit
 	offset := params.Offset
 
@@ -240,7 +131,7 @@ func ListDirectories(ctx context.Context, clientConfig ClientConfig, params List
 		}
 	}
 
-	resp, err := DoCfg[SchemaSchema_db46323d](ctx, &clientConfig, "GET", "/directories", &RequestOpts{
+	resp, err := DoCfg[DirectoryList](ctx, &clientConfig, "GET", "/directories", &RequestOpts{
 		Query: map[string]any{
 			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
 			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
@@ -427,10 +318,10 @@ type ListDirectoryGroupRoleMappingsParams struct {
 // Parameters:
 //
 //	directoryId: The ID of the directory.
-func ListDirectoryGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ListDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_1459c10b, error) {
+func ListDirectoryGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ListDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*DirectoryGroupRoleMappingList, error) {
 	directoryId := params.DirectoryId
 
-	resp, err := DoCfg[SchemaSchema_1459c10b](ctx, &clientConfig, "GET", fmt.Sprintf("/directories/%s/group_role_mappings", EncodePathSegment(directoryId)), &RequestOpts{
+	resp, err := DoCfg[DirectoryGroupRoleMappingList](ctx, &clientConfig, "GET", fmt.Sprintf("/directories/%s/group_role_mappings", EncodePathSegment(directoryId)), &RequestOpts{
 		OperationID: "ListDirectoryGroupRoleMappings",
 		Errors:      ErrorDecoders{"401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -504,11 +395,11 @@ type ReplaceDirectoryGroupRoleMappingsParams struct {
 //	directoryId: The ID of the directory.
 //	mappings: The desired set of mappings. Array order sets precedence
 //	(1-indexed). An empty array clears all mappings.
-func ReplaceDirectoryGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ReplaceDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_1459c10b, error) {
+func ReplaceDirectoryGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ReplaceDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*DirectoryGroupRoleMappingList, error) {
 	directoryId := params.DirectoryId
 	mappings := params.Mappings
 
-	resp, err := DoCfg[SchemaSchema_1459c10b](ctx, &clientConfig, "PUT", fmt.Sprintf("/directories/%s/group_role_mappings", EncodePathSegment(directoryId)), &RequestOpts{
+	resp, err := DoCfg[DirectoryGroupRoleMappingList](ctx, &clientConfig, "PUT", fmt.Sprintf("/directories/%s/group_role_mappings", EncodePathSegment(directoryId)), &RequestOpts{
 		Body: map[string]any{
 			"mappings": mappings,
 		},
@@ -533,11 +424,11 @@ type DeleteDirectoryGroupRoleMappingParams struct {
 //
 //	directoryId: The ID of the directory.
 //	mappingId: The ID of the directory group role mapping to delete.
-func DeleteDirectoryGroupRoleMapping(ctx context.Context, clientConfig ClientConfig, params DeleteDirectoryGroupRoleMappingParams, opts ...RequestOption) (*SchemaSchema_0a4178a1, error) {
+func DeleteDirectoryGroupRoleMapping(ctx context.Context, clientConfig ClientConfig, params DeleteDirectoryGroupRoleMappingParams, opts ...RequestOption) (*DirectoryGroupRoleMappingDeleted, error) {
 	directoryId := params.DirectoryId
 	mappingId := params.MappingId
 
-	resp, err := DoCfg[SchemaSchema_0a4178a1](ctx, &clientConfig, "DELETE", fmt.Sprintf("/directories/%s/group_role_mappings/%s", EncodePathSegment(directoryId), EncodePathSegment(mappingId)), &RequestOpts{
+	resp, err := DoCfg[DirectoryGroupRoleMappingDeleted](ctx, &clientConfig, "DELETE", fmt.Sprintf("/directories/%s/group_role_mappings/%s", EncodePathSegment(directoryId), EncodePathSegment(mappingId)), &RequestOpts{
 		OperationID: "DeleteDirectoryGroupRoleMapping",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,

@@ -572,7 +572,7 @@ func (sdk *UsersNamespace) DeletePasskey(ctx context.Context, params DeleteUsers
 // Parameters:
 //
 //	userId: The ID of the user whose trusted devices are returned
-func (sdk *UsersNamespace) ListTrustedDevices(ctx context.Context, params ListUserTrustedDevicesParams, opts ...RequestOption) (*SchemaSchema_36c20f95, error) {
+func (sdk *UsersNamespace) ListTrustedDevices(ctx context.Context, params ListUserTrustedDevicesParams, opts ...RequestOption) (*TrustedDeviceList, error) {
 	return ListUserTrustedDevices(ctx, sdk.config, params, opts...)
 }
 
@@ -593,7 +593,7 @@ func (sdk *UsersNamespace) RevokeTrustedDevice(ctx context.Context, params Revok
 // Parameters:
 //
 //	userId: The ID of the user whose biometric credentials are returned
-func (sdk *UsersNamespace) ListBiometricCredentials(ctx context.Context, params ListUserBiometricCredentialsParams, opts ...RequestOption) (*SchemaSchema, error) {
+func (sdk *UsersNamespace) ListBiometricCredentials(ctx context.Context, params ListUserBiometricCredentialsParams, opts ...RequestOption) (*BiometricCredentialList, error) {
 	return ListUserBiometricCredentials(ctx, sdk.config, params, opts...)
 }
 

@@ -17,11 +17,11 @@ type VerifyOAuthAccessTokenParams struct {
 //	accessToken: The access token to verify.
 //	secret: The access token to verify. This is deprecated, use `access_token`
 //	instead.
-func VerifyOAuthAccessToken(ctx context.Context, clientConfig ClientConfig, params VerifyOAuthAccessTokenParams, opts ...RequestOption) (map[string]any, error) {
+func VerifyOAuthAccessToken(ctx context.Context, clientConfig ClientConfig, params VerifyOAuthAccessTokenParams, opts ...RequestOption) (*VerifyOAuthAccessTokenResponse, error) {
 	accessToken := params.AccessToken
 	secret := params.Secret
 
-	resp, err := DoCfg[map[string]any](ctx, &clientConfig, "POST", "/oauth_applications/access_tokens/verify", &RequestOpts{
+	resp, err := DoCfg[VerifyOAuthAccessTokenResponse](ctx, &clientConfig, "POST", "/oauth_applications/access_tokens/verify", &RequestOpts{
 		Body: map[string]any{
 			"access_token": accessToken,
 			"secret":       secret,
@@ -32,5 +32,5 @@ func VerifyOAuthAccessToken(ctx context.Context, clientConfig ClientConfig, para
 	if err != nil {
 		return nil, err
 	}
-	return resp.Data, nil
+	return &resp.Data, nil
 }

@@ -325,6 +325,93 @@ func NewOrganizationInvitationPublicOrganizationData(fields OrganizationInvitati
 	return ConstructModel(fields)
 }
 
+// OrganizationInvitationWithPublicOrganizationDataVariant0 Required object value serialized in the `data[]` wire field.
+type OrganizationInvitationWithPublicOrganizationDataVariant0 struct {
+	// Object String representing the object's type. Objects of the same type share the same value.
+	Object *OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum `json:"object,omitempty"`
+	// Id Optional `string` value serialized in the `id` wire field.
+	Id *string `json:"id,omitempty"`
+	// EmailAddress Optional `string` value serialized in the `email_address` wire field.
+	EmailAddress *string `json:"email_address,omitempty"`
+	// Role Optional `string` value serialized in the `role` wire field.
+	Role *string `json:"role,omitempty"`
+	// RoleName Optional `string` value serialized in the `role_name` wire field.
+	RoleName *string `json:"role_name,omitempty"`
+	// OrganizationId Optional `string` value serialized in the `organization_id` wire field.
+	OrganizationId *string `json:"organization_id,omitempty"`
+	// InviterId Optional `string` value serialized in the `inviter_id` wire field.
+	InviterId *NullableValue[string] `json:"inviter_id,omitempty"`
+	// PublicInviterData An organization inviter's public user data
+	PublicInviterData *NullableValue[OrganizationInvitationPublicUserData] `json:"public_inviter_data,omitempty"`
+	// Status Optional `string` value serialized in the `status` wire field.
+	Status *string `json:"status,omitempty"`
+	// PublicMetadata Optional object value serialized in the `public_metadata` wire field.
+	PublicMetadata map[string]any `json:"public_metadata,omitempty"`
+	// PrivateMetadata Optional object value serialized in the `private_metadata` wire field.
+	PrivateMetadata map[string]any `json:"private_metadata,omitempty"`
+	// Url Optional `string` value serialized in the `url` wire field.
+	Url *NullableValue[string] `json:"url,omitempty"`
+	// ExpiresAt Unix timestamp of expiration.
+	ExpiresAt *NullableValue[int64] `json:"expires_at,omitempty"`
+	// CreatedAt Unix timestamp of creation.
+	CreatedAt *int64 `json:"created_at,omitempty"`
+	// UpdatedAt Unix timestamp of last update.
+	UpdatedAt *int64 `json:"updated_at,omitempty"`
+}
+
+func (value *OrganizationInvitationWithPublicOrganizationDataVariant0) UnmarshalJSON(data []byte) error {
+	type OrganizationInvitationWithPublicOrganizationDataVariant0Alias OrganizationInvitationWithPublicOrganizationDataVariant0
+	var decoded OrganizationInvitationWithPublicOrganizationDataVariant0Alias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = OrganizationInvitationWithPublicOrganizationDataVariant0(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["inviter_id"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.InviterId = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["public_inviter_data"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.PublicInviterData = &NullableValue[OrganizationInvitationPublicUserData]{}
+	}
+	if raw, ok := rawFields["url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Url = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["expires_at"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.ExpiresAt = &NullableValue[int64]{}
+	}
+	return nil
+}
+
+// NewOrganizationInvitationWithPublicOrganizationDataVariant0 returns a validated OrganizationInvitationWithPublicOrganizationDataVariant0 built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewOrganizationInvitationWithPublicOrganizationDataVariant0(fields OrganizationInvitationWithPublicOrganizationDataVariant0) (*OrganizationInvitationWithPublicOrganizationDataVariant0, error) {
+	return ConstructModel(fields)
+}
+
+// OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum String representing the object's type. Objects of the same type share the same value.
+type OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum string
+
+const (
+	OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnumOrganizationInvitation OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum = "organization_invitation"
+)
+
+// OrganizationInvitationWithPublicOrganizationDataVariant1 Required object value serialized in the `data[]` wire field.
+type OrganizationInvitationWithPublicOrganizationDataVariant1 struct {
+	// PublicOrganizationData Optional object value serialized in the `public_organization_data` wire field.
+	PublicOrganizationData *OrganizationInvitationPublicOrganizationData `json:"public_organization_data,omitempty"`
+}
+
+// NewOrganizationInvitationWithPublicOrganizationDataVariant1 returns a validated OrganizationInvitationWithPublicOrganizationDataVariant1 built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewOrganizationInvitationWithPublicOrganizationDataVariant1(fields OrganizationInvitationWithPublicOrganizationDataVariant1) (*OrganizationInvitationWithPublicOrganizationDataVariant1, error) {
+	return ConstructModel(fields)
+}
+
 // OrganizationInvitationWithPublicOrganizationData An organization invitation with public organization data populated
 type OrganizationInvitationWithPublicOrganizationData struct {
 	// Object String representing the object's type. Objects of the same type share the same value.
@@ -393,13 +480,6 @@ func (value *OrganizationInvitationWithPublicOrganizationData) UnmarshalJSON(dat
 func NewOrganizationInvitationWithPublicOrganizationData(fields OrganizationInvitationWithPublicOrganizationData) (*OrganizationInvitationWithPublicOrganizationData, error) {
 	return ConstructModel(fields)
 }
-
-// OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum String representing the object's type. Objects of the same type share the same value.
-type OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum string
-
-const (
-	OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnumOrganizationInvitation OrganizationInvitationWithPublicOrganizationDataVariant0ObjectEnum = "organization_invitation"
-)
 
 // OrganizationInvitationsWithPublicOrganizationData Typed representation of the `OrganizationInvitationsWithPublicOrganizationData` API schema.
 type OrganizationInvitationsWithPublicOrganizationData struct {

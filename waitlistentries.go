@@ -10,39 +10,6 @@ import (
 	"fmt"
 )
 
-type SchemaSchema_45ad91e0 struct {
-	Data []WaitlistEntry `json:"data"`
-	// TotalCount Total number of waitlist entries
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_45ad91e0) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_45ad91e0Alias SchemaSchema_45ad91e0
-	var decoded SchemaSchema_45ad91e0Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_45ad91e0(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_45ad91e0 returns a validated SchemaSchema_45ad91e0 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_45ad91e0(fields SchemaSchema_45ad91e0) (*SchemaSchema_45ad91e0, error) {
-	return ConstructModel(fields)
-}
-
 type CreateBulkWaitlistEntriesModel struct {
 	// EmailAddress The email address to add to the waitlist
 	EmailAddress string `json:"email_address"`
@@ -105,7 +72,7 @@ type ListWaitlistEntriesParams struct {
 //	orderBy: Specify the order of results. Supported values are: - `created_at`
 //	- `email_address` - `invited_at` Use `+` for ascending or `-` for descending
 //	order. Defaults to `-created_at`.
-func ListWaitlistEntries(ctx context.Context, clientConfig ClientConfig, params ListWaitlistEntriesParams, opts ...RequestOption) (*SchemaSchema_45ad91e0, error) {
+func ListWaitlistEntries(ctx context.Context, clientConfig ClientConfig, params ListWaitlistEntriesParams, opts ...RequestOption) (*WaitlistEntries, error) {
 	limit := params.Limit
 	offset := params.Offset
 	query := params.Query
@@ -124,7 +91,7 @@ func ListWaitlistEntries(ctx context.Context, clientConfig ClientConfig, params 
 		}
 	}
 
-	resp, err := DoCfg[SchemaSchema_45ad91e0](ctx, &clientConfig, "GET", "/waitlist_entries", &RequestOpts{
+	resp, err := DoCfg[WaitlistEntries](ctx, &clientConfig, "GET", "/waitlist_entries", &RequestOpts{
 		Query: map[string]any{
 			"limit":    QueryValue{Value: limit, Style: "form", Explode: true},
 			"offset":   QueryValue{Value: offset, Style: "form", Explode: true},

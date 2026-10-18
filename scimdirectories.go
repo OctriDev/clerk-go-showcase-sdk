@@ -9,39 +9,6 @@ import (
 	"fmt"
 )
 
-type SchemaSchema_a0ee7c0b struct {
-	Data []SCIMDirectory `json:"data"`
-	// TotalCount Total number of directories.
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_a0ee7c0b) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_a0ee7c0bAlias SchemaSchema_a0ee7c0b
-	var decoded SchemaSchema_a0ee7c0bAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_a0ee7c0b(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_a0ee7c0b returns a validated SchemaSchema_a0ee7c0b built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_a0ee7c0b(fields SchemaSchema_a0ee7c0b) (*SchemaSchema_a0ee7c0b, error) {
-	return ConstructModel(fields)
-}
-
 type CreateSCIMDirectoryGroupRoleMappings struct {
 	// ScimGroupId The SCIM group ID from the identity provider.
 	ScimGroupId string `json:"scim_group_id"`
@@ -90,39 +57,6 @@ func NewCreateSCIMDirectoryGroupRoleMappings(fields CreateSCIMDirectoryGroupRole
 	return ConstructModel(fields)
 }
 
-type SchemaSchema_c6c780d9 struct {
-	Data []SCIMGroupRoleMapping `json:"data"`
-	// TotalCount Total number of SCIM group role mappings in the directory.
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_c6c780d9) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_c6c780d9Alias SchemaSchema_c6c780d9
-	var decoded SchemaSchema_c6c780d9Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_c6c780d9(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_c6c780d9 returns a validated SchemaSchema_c6c780d9 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_c6c780d9(fields SchemaSchema_c6c780d9) (*SchemaSchema_c6c780d9, error) {
-	return ConstructModel(fields)
-}
-
 type ReplaceSCIMGroupRoleMappingsMappings struct {
 	// ScimGroupId The SCIM group ID from the identity provider.
 	ScimGroupId string `json:"scim_group_id"`
@@ -157,49 +91,6 @@ func NewReplaceSCIMGroupRoleMappingsMappings(fields ReplaceSCIMGroupRoleMappings
 	return ConstructModel(fields)
 }
 
-type SchemaSchema_b78302a9 struct {
-	// Object String representing the object's type.
-	Object SchemaSchemaObjectEnum_3d55986b `json:"object"`
-	// Id The ID of the deleted SCIM group role mapping.
-	Id string `json:"id"`
-	// Deleted Whether the SCIM group role mapping was successfully deleted.
-	Deleted bool `json:"deleted"`
-}
-
-func (value *SchemaSchema_b78302a9) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_b78302a9Alias SchemaSchema_b78302a9
-	var decoded SchemaSchema_b78302a9Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_b78302a9(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_b78302a9 returns a validated SchemaSchema_b78302a9 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_b78302a9(fields SchemaSchema_b78302a9) (*SchemaSchema_b78302a9, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum_3d55986b String representing the object's type.
-type SchemaSchemaObjectEnum_3d55986b string
-
-const (
-	SchemaSchemaObjectEnum_3d55986bScimGroupRoleMapping SchemaSchemaObjectEnum_3d55986b = "scim_group_role_mapping"
-)
-
 type ListSCIMDirectoriesParams struct {
 	Limit  *int64
 	Offset *int64
@@ -213,7 +104,7 @@ type ListSCIMDirectoriesParams struct {
 //	paginating the results together with `offset`.
 //	offset: Skip the first `offset` results when paginating. Needs to be an
 //	integer greater or equal to zero. To be used in conjunction with `limit`.
-func ListSCIMDirectories(ctx context.Context, clientConfig ClientConfig, params ListSCIMDirectoriesParams, opts ...RequestOption) (*SchemaSchema_a0ee7c0b, error) {
+func ListSCIMDirectories(ctx context.Context, clientConfig ClientConfig, params ListSCIMDirectoriesParams, opts ...RequestOption) (*SCIMDirectoryList, error) {
 	limit := params.Limit
 	offset := params.Offset
 
@@ -229,7 +120,7 @@ func ListSCIMDirectories(ctx context.Context, clientConfig ClientConfig, params 
 		}
 	}
 
-	resp, err := DoCfg[SchemaSchema_a0ee7c0b](ctx, &clientConfig, "GET", "/scim_directories", &RequestOpts{
+	resp, err := DoCfg[SCIMDirectoryList](ctx, &clientConfig, "GET", "/scim_directories", &RequestOpts{
 		Query: map[string]any{
 			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
 			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
@@ -416,10 +307,10 @@ type ListSCIMGroupRoleMappingsParams struct {
 // Parameters:
 //
 //	scimDirectoryId: The ID of the directory.
-func ListSCIMGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ListSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_c6c780d9, error) {
+func ListSCIMGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ListSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SCIMGroupRoleMappingList, error) {
 	scimDirectoryId := params.ScimDirectoryId
 
-	resp, err := DoCfg[SchemaSchema_c6c780d9](ctx, &clientConfig, "GET", fmt.Sprintf("/scim_directories/%s/group_role_mappings", EncodePathSegment(scimDirectoryId)), &RequestOpts{
+	resp, err := DoCfg[SCIMGroupRoleMappingList](ctx, &clientConfig, "GET", fmt.Sprintf("/scim_directories/%s/group_role_mappings", EncodePathSegment(scimDirectoryId)), &RequestOpts{
 		OperationID: "ListSCIMGroupRoleMappings",
 		Errors:      ErrorDecoders{"401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -488,11 +379,11 @@ type ReplaceSCIMGroupRoleMappingsParams struct {
 //	scimDirectoryId: The ID of the directory.
 //	mappings: The desired set of mappings. Array order sets precedence
 //	(1-indexed). An empty array clears all mappings.
-func ReplaceSCIMGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ReplaceSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_c6c780d9, error) {
+func ReplaceSCIMGroupRoleMappings(ctx context.Context, clientConfig ClientConfig, params ReplaceSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SCIMGroupRoleMappingList, error) {
 	scimDirectoryId := params.ScimDirectoryId
 	mappings := params.Mappings
 
-	resp, err := DoCfg[SchemaSchema_c6c780d9](ctx, &clientConfig, "PUT", fmt.Sprintf("/scim_directories/%s/group_role_mappings", EncodePathSegment(scimDirectoryId)), &RequestOpts{
+	resp, err := DoCfg[SCIMGroupRoleMappingList](ctx, &clientConfig, "PUT", fmt.Sprintf("/scim_directories/%s/group_role_mappings", EncodePathSegment(scimDirectoryId)), &RequestOpts{
 		Body: map[string]any{
 			"mappings": mappings,
 		},
@@ -517,11 +408,11 @@ type DeleteSCIMGroupRoleMappingParams struct {
 //
 //	scimDirectoryId: The ID of the directory.
 //	mappingId: The ID of the SCIM group role mapping to delete.
-func DeleteSCIMGroupRoleMapping(ctx context.Context, clientConfig ClientConfig, params DeleteSCIMGroupRoleMappingParams, opts ...RequestOption) (*SchemaSchema_b78302a9, error) {
+func DeleteSCIMGroupRoleMapping(ctx context.Context, clientConfig ClientConfig, params DeleteSCIMGroupRoleMappingParams, opts ...RequestOption) (*SCIMGroupRoleMappingDeleted, error) {
 	scimDirectoryId := params.ScimDirectoryId
 	mappingId := params.MappingId
 
-	resp, err := DoCfg[SchemaSchema_b78302a9](ctx, &clientConfig, "DELETE", fmt.Sprintf("/scim_directories/%s/group_role_mappings/%s", EncodePathSegment(scimDirectoryId), EncodePathSegment(mappingId)), &RequestOpts{
+	resp, err := DoCfg[SCIMGroupRoleMappingDeleted](ctx, &clientConfig, "DELETE", fmt.Sprintf("/scim_directories/%s/group_role_mappings/%s", EncodePathSegment(scimDirectoryId), EncodePathSegment(mappingId)), &RequestOpts{
 		OperationID: "DeleteSCIMGroupRoleMapping",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,

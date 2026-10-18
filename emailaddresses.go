@@ -4,58 +4,9 @@
 package sdk
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 )
-
-type SchemaSchema_3e93ce8e struct {
-	// Object The type of the verification object.
-	Object *string `json:"object,omitempty"`
-	// Id The ID of the verification. Pass this to attempt_verification.
-	Id *string `json:"id,omitempty"`
-	// Status The status of the verification (unverified, verified, expired, or failed).
-	Status *string `json:"status,omitempty"`
-	// Strategy The verification strategy (email_code or phone_code).
-	Strategy *string `json:"strategy,omitempty"`
-	// Attempts The number of attempts made against this verification.
-	Attempts *NullableValue[int64] `json:"attempts,omitempty"`
-	// ExpireAt Unix timestamp (milliseconds) at which the code expires.
-	ExpireAt *NullableValue[int64] `json:"expire_at,omitempty"`
-	// Channel The channel the code was sent over (phone numbers only).
-	Channel *NullableValue[string] `json:"channel,omitempty"`
-}
-
-func (value *SchemaSchema_3e93ce8e) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_3e93ce8eAlias SchemaSchema_3e93ce8e
-	var decoded SchemaSchema_3e93ce8eAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_3e93ce8e(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["attempts"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Attempts = &NullableValue[int64]{}
-	}
-	if raw, ok := rawFields["expire_at"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.ExpireAt = &NullableValue[int64]{}
-	}
-	if raw, ok := rawFields["channel"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Channel = &NullableValue[string]{}
-	}
-	return nil
-}
-
-// NewSchemaSchema_3e93ce8e returns a validated SchemaSchema_3e93ce8e built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_3e93ce8e(fields SchemaSchema_3e93ce8e) (*SchemaSchema_3e93ce8e, error) {
-	return ConstructModel(fields)
-}
 
 type CreateEmailAddressParams struct {
 	UserId                           string
@@ -205,10 +156,10 @@ type PrepareEmailAddressVerificationParams struct {
 // Parameters:
 //
 //	emailAddressId: The ID of the email address to send the verification code to
-func PrepareEmailAddressVerification(ctx context.Context, clientConfig ClientConfig, params PrepareEmailAddressVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func PrepareEmailAddressVerification(ctx context.Context, clientConfig ClientConfig, params PrepareEmailAddressVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	emailAddressId := params.EmailAddressId
 
-	resp, err := DoCfg[SchemaSchema_3e93ce8e](ctx, &clientConfig, "POST", fmt.Sprintf("/email_addresses/%s/prepare_verification", EncodePathSegment(emailAddressId)), &RequestOpts{
+	resp, err := DoCfg[VerificationResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/email_addresses/%s/prepare_verification", EncodePathSegment(emailAddressId)), &RequestOpts{
 		OperationID: "PrepareEmailAddressVerification",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "429": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -233,12 +184,12 @@ type AttemptEmailAddressVerificationParams struct {
 //	verificationId: The ID of the verification to check, such as one returned by
 //	prepare_verification
 //	code: The verification code that was sent to the email address
-func AttemptEmailAddressVerification(ctx context.Context, clientConfig ClientConfig, params AttemptEmailAddressVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func AttemptEmailAddressVerification(ctx context.Context, clientConfig ClientConfig, params AttemptEmailAddressVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	emailAddressId := params.EmailAddressId
 	verificationId := params.VerificationId
 	code := params.Code
 
-	resp, err := DoCfg[SchemaSchema_3e93ce8e](ctx, &clientConfig, "POST", fmt.Sprintf("/email_addresses/%s/attempt_verification", EncodePathSegment(emailAddressId)), &RequestOpts{
+	resp, err := DoCfg[VerificationResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/email_addresses/%s/attempt_verification", EncodePathSegment(emailAddressId)), &RequestOpts{
 		Body: map[string]any{
 			"verification_id": verificationId,
 			"code":            code,

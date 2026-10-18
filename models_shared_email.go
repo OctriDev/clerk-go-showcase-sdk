@@ -140,6 +140,44 @@ func (u *EmailAddressVerification) UnmarshalJSON(data []byte) error {
 			}
 		}
 	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationOtp
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationOtp = &lossless0
+			return nil
+		}
+		var lossless1 VerificationAdmin
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationAdmin = &lossless1
+			return nil
+		}
+		var lossless2 VerificationFromOauth
+		if json.Unmarshal(data, &lossless2) == nil && keepsEveryKey(raw, lossless2) {
+			u.VerificationFromOauth = &lossless2
+			return nil
+		}
+		var lossless3 VerificationTicket
+		if json.Unmarshal(data, &lossless3) == nil && keepsEveryKey(raw, lossless3) {
+			u.VerificationTicket = &lossless3
+			return nil
+		}
+		var lossless4 VerificationSaml
+		if json.Unmarshal(data, &lossless4) == nil && keepsEveryKey(raw, lossless4) {
+			u.VerificationSaml = &lossless4
+			return nil
+		}
+		var lossless5 VerificationEmailLink
+		if json.Unmarshal(data, &lossless5) == nil && keepsEveryKey(raw, lossless5) {
+			u.VerificationEmailLink = &lossless5
+			return nil
+		}
+		var lossless6 VerificationScim
+		if json.Unmarshal(data, &lossless6) == nil && keepsEveryKey(raw, lossless6) {
+			u.VerificationScim = &lossless6
+			return nil
+		}
+	}
 	var verificationotp VerificationOtp
 	if err := json.Unmarshal(data, &verificationotp); err == nil && isNonEmptyEmailAddressVerificationVerificationOtp(verificationotp) {
 		u.VerificationOtp = &verificationotp

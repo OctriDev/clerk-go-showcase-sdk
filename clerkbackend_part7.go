@@ -12,7 +12,7 @@ import "context"
 //	directoryId: The ID of the directory.
 //	mappings: The desired set of mappings. Array order sets precedence
 //	(1-indexed). An empty array clears all mappings.
-func (sdk *DirectoriesNamespace) ReplaceGroupRoleMappings(ctx context.Context, params ReplaceDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_1459c10b, error) {
+func (sdk *DirectoriesNamespace) ReplaceGroupRoleMappings(ctx context.Context, params ReplaceDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*DirectoryGroupRoleMappingList, error) {
 	return ReplaceDirectoryGroupRoleMappings(ctx, sdk.config, params, opts...)
 }
 
@@ -22,7 +22,7 @@ func (sdk *DirectoriesNamespace) ReplaceGroupRoleMappings(ctx context.Context, p
 //
 //	directoryId: The ID of the directory.
 //	mappingId: The ID of the directory group role mapping to delete.
-func (sdk *DirectoriesNamespace) DeleteGroupRoleMapping(ctx context.Context, params DeleteDirectoryGroupRoleMappingParams, opts ...RequestOption) (*SchemaSchema_0a4178a1, error) {
+func (sdk *DirectoriesNamespace) DeleteGroupRoleMapping(ctx context.Context, params DeleteDirectoryGroupRoleMappingParams, opts ...RequestOption) (*DirectoryGroupRoleMappingDeleted, error) {
 	return DeleteDirectoryGroupRoleMapping(ctx, sdk.config, params, opts...)
 }
 
@@ -169,7 +169,7 @@ func NewOAuthAccessTokensNamespace(config ClientConfig) *OAuthAccessTokensNamesp
 //	accessToken: The access token to verify.
 //	secret: The access token to verify. This is deprecated, use `access_token`
 //	instead.
-func (sdk *OAuthAccessTokensNamespace) Verify(ctx context.Context, params VerifyOAuthAccessTokenParams, opts ...RequestOption) (map[string]any, error) {
+func (sdk *OAuthAccessTokensNamespace) Verify(ctx context.Context, params VerifyOAuthAccessTokenParams, opts ...RequestOption) (*VerifyOAuthAccessTokenResponse, error) {
 	return VerifyOAuthAccessToken(ctx, sdk.config, params, opts...)
 }
 

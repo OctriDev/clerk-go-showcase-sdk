@@ -224,8 +224,60 @@ const (
 	ExternalAccountWithVerificationObjectEnumGoogleAccount   ExternalAccountWithVerificationObjectEnum = "google_account"
 )
 
-// SAMLAccountConnection is a union type
-type SAMLAccountConnection = any
+// SAMLAccountConnection Typed representation of the `SAMLAccountConnection` API schema.
+type SAMLAccountConnection struct {
+	// Id Required `string` value serialized in the `id` wire field.
+	Id string `json:"id"`
+	// Name Required `string` value serialized in the `name` wire field.
+	Name string `json:"name"`
+	// Domain Optional `string` value serialized in the `domain` wire field.
+	Domain *string `json:"domain,omitempty"`
+	// Domains Optional array value serialized in the `domains` wire field.
+	Domains []string `json:"domains,omitempty"`
+	// Active Required `boolean` value serialized in the `active` wire field.
+	Active bool `json:"active"`
+	// Provider Required `string` value serialized in the `provider` wire field.
+	Provider string `json:"provider"`
+	// SyncUserAttributes Required `boolean` value serialized in the `sync_user_attributes` wire field.
+	SyncUserAttributes bool `json:"sync_user_attributes"`
+	// AllowSubdomains Optional `boolean` value serialized in the `allow_subdomains` wire field.
+	AllowSubdomains *bool `json:"allow_subdomains,omitempty"`
+	// AllowIdpInitiated Optional `boolean` value serialized in the `allow_idp_initiated` wire field.
+	AllowIdpInitiated *bool `json:"allow_idp_initiated,omitempty"`
+	// DisableAdditionalIdentifications Optional `boolean` value serialized in the `disable_additional_identifications` wire field.
+	DisableAdditionalIdentifications *bool `json:"disable_additional_identifications,omitempty"`
+	// CreatedAt Unix timestamp of creation.
+	CreatedAt int64 `json:"created_at"`
+	// UpdatedAt Unix timestamp of last update.
+	UpdatedAt int64 `json:"updated_at"`
+}
+
+func (value *SAMLAccountConnection) UnmarshalJSON(data []byte) error {
+	type SAMLAccountConnectionAlias SAMLAccountConnection
+	var decoded SAMLAccountConnectionAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SAMLAccountConnection(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"id", "name", "active", "provider", "sync_user_attributes", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"id", "name", "active", "provider", "sync_user_attributes", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewSAMLAccountConnection returns a validated SAMLAccountConnection built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSAMLAccountConnection(fields SAMLAccountConnection) (*SAMLAccountConnection, error) {
+	return ConstructModel(fields)
+}
 
 // SAMLAccount Typed representation of the `SAMLAccount` API schema.
 type SAMLAccount struct {
@@ -304,8 +356,64 @@ const (
 	SAMLAccountObjectEnumSamlAccount SAMLAccountObjectEnum = "saml_account"
 )
 
-// EnterpriseAccountConnection is a union type
-type EnterpriseAccountConnection = any
+// EnterpriseAccountConnection Typed representation of the `EnterpriseAccountConnection` API schema.
+type EnterpriseAccountConnection struct {
+	// Id Required `string` value serialized in the `id` wire field.
+	Id string `json:"id"`
+	// Protocol Required `string` value serialized in the `protocol` wire field.
+	Protocol string `json:"protocol"`
+	// Provider Required `string` value serialized in the `provider` wire field.
+	Provider string `json:"provider"`
+	// Name Required `string` value serialized in the `name` wire field.
+	Name string `json:"name"`
+	// LogoPublicUrl Required `string` value serialized in the `logo_public_url` wire field.
+	LogoPublicUrl NullableValue[string] `json:"logo_public_url"`
+	// Domain Optional `string` value serialized in the `domain` wire field.
+	Domain *string `json:"domain,omitempty"`
+	// Domains Optional array value serialized in the `domains` wire field.
+	Domains []string `json:"domains,omitempty"`
+	// Active Required `boolean` value serialized in the `active` wire field.
+	Active bool `json:"active"`
+	// SyncUserAttributes Required `boolean` value serialized in the `sync_user_attributes` wire field.
+	SyncUserAttributes bool `json:"sync_user_attributes"`
+	// AllowSubdomains Required `boolean` value serialized in the `allow_subdomains` wire field.
+	AllowSubdomains bool `json:"allow_subdomains"`
+	// AllowIdpInitiated Required `boolean` value serialized in the `allow_idp_initiated` wire field.
+	AllowIdpInitiated bool `json:"allow_idp_initiated"`
+	// DisableAdditionalIdentifications Required `boolean` value serialized in the `disable_additional_identifications` wire field.
+	DisableAdditionalIdentifications bool `json:"disable_additional_identifications"`
+	// CreatedAt Unix timestamp of creation.
+	CreatedAt int64 `json:"created_at"`
+	// UpdatedAt Unix timestamp of last update.
+	UpdatedAt int64 `json:"updated_at"`
+}
+
+func (value *EnterpriseAccountConnection) UnmarshalJSON(data []byte) error {
+	type EnterpriseAccountConnectionAlias EnterpriseAccountConnection
+	var decoded EnterpriseAccountConnectionAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = EnterpriseAccountConnection(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"id", "protocol", "name", "logo_public_url", "active", "provider", "sync_user_attributes", "disable_additional_identifications", "allow_subdomains", "allow_idp_initiated", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"id", "protocol", "name", "active", "provider", "sync_user_attributes", "disable_additional_identifications", "allow_subdomains", "allow_idp_initiated", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewEnterpriseAccountConnection returns a validated EnterpriseAccountConnection built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewEnterpriseAccountConnection(fields EnterpriseAccountConnection) (*EnterpriseAccountConnection, error) {
+	return ConstructModel(fields)
+}
 
 // EnterpriseAccount Typed representation of the `EnterpriseAccount` API schema.
 type EnterpriseAccount struct {
@@ -581,123 +689,4 @@ type User struct {
 	Directory *SCIMUserMetadata `json:"directory,omitempty"`
 	// Scim Alias of directory. Use directories for all links.
 	Scim *NullableValue[SCIMUserMetadata] `json:"scim,omitempty"`
-}
-
-func (value *User) UnmarshalJSON(data []byte) error {
-	type UserAlias User
-	var decoded UserAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = User(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"id", "object", "username", "first_name", "last_name", "has_image", "primary_email_address_id", "primary_phone_number_id", "primary_web3_wallet_id", "password_enabled", "two_factor_enabled", "totp_enabled", "backup_code_enabled", "email_addresses", "phone_numbers", "web3_wallets", "passkeys", "external_accounts", "saml_accounts", "enterprise_accounts", "public_metadata", "external_id", "last_sign_in_at", "banned", "locked", "lockout_expires_in_seconds", "verification_attempts_remaining", "created_at", "updated_at", "delete_self_enabled", "create_organization_enabled", "last_active_at", "mfa_enabled_at", "mfa_disabled_at", "legal_accepted_at"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"id", "object", "has_image", "password_enabled", "two_factor_enabled", "totp_enabled", "backup_code_enabled", "email_addresses", "phone_numbers", "web3_wallets", "passkeys", "external_accounts", "saml_accounts", "enterprise_accounts", "public_metadata", "banned", "locked", "created_at", "updated_at", "delete_self_enabled", "create_organization_enabled"}); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["locale"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Locale = &NullableValue[string]{}
-	}
-	if raw, ok := rawFields["timezone"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Timezone = &NullableValue[string]{}
-	}
-	if raw, ok := rawFields["private_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.PrivateMetadata = &NullableValue[map[string]any]{}
-	}
-	if raw, ok := rawFields["password_last_updated_at"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.PasswordLastUpdatedAt = &NullableValue[int64]{}
-	}
-	if raw, ok := rawFields["create_organizations_limit"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.CreateOrganizationsLimit = &NullableValue[int64]{}
-	}
-	if raw, ok := rawFields["scim"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Scim = &NullableValue[SCIMUserMetadata]{}
-	}
-	return nil
-}
-
-// NewUser returns a validated User built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewUser(fields User) (*User, error) {
-	return ConstructModel(fields)
-}
-
-// UserObjectEnum String representing the object's type. Objects of the same type share the same value.
-type UserObjectEnum string
-
-const (
-	UserObjectEnumUser UserObjectEnum = "user"
-)
-
-// PasswordHasher is an alias for string.
-type PasswordHasher = string
-
-// TotalCount Typed representation of the `TotalCount` API schema.
-type TotalCount struct {
-	// Object String representing the object's type. Objects of the same type share the same value.
-	Object TotalCountObjectEnum `json:"object"`
-	// TotalCount Required `int64`-formatted value serialized in the `total_count` wire field.
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *TotalCount) UnmarshalJSON(data []byte) error {
-	type TotalCountAlias TotalCount
-	var decoded TotalCountAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = TotalCount(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewTotalCount returns a validated TotalCount built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewTotalCount(fields TotalCount) (*TotalCount, error) {
-	return ConstructModel(fields)
-}
-
-// TotalCountObjectEnum String representing the object's type. Objects of the same type share the same value.
-type TotalCountObjectEnum string
-
-const (
-	TotalCountObjectEnumTotalCount TotalCountObjectEnum = "total_count"
-)
-
-type OAuthAccessToken_60fbbfc6 struct {
-	Object OAuthAccessTokenObjectEnum `json:"object"`
-	// ExternalAccountId External account ID
-	ExternalAccountId string `json:"external_account_id"`
-	// ProviderUserId The unique ID of the user in the external provider's system
-	ProviderUserId string `json:"provider_user_id"`
-	// Token The access token
-	Token string `json:"token"`
-	// ExpiresAt Unix timestamp of the access token expiration.
-	ExpiresAt NullableValue[int64] `json:"expires_at"`
-	// Provider The ID of the provider
-	Provider       string                `json:"provider"`
-	PublicMetadata map[string]any        `json:"public_metadata"`
-	Label          NullableValue[string] `json:"label"`
-	// Scopes The list of scopes that the token is valid for. Only present for OAuth 2.0 tokens.
-	Scopes []string `json:"scopes,omitempty"`
-	// IdToken The ID token retrieved from the OIDC provider. Only present for OIDC-compliant OAuth 2.0 providers when available.
-	IdToken *string `json:"id_token,omitempty"`
-	// TokenSecret The token secret. Only present for OAuth 1.0 tokens.
-	TokenSecret *string `json:"token_secret,omitempty"`
 }

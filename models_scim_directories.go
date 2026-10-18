@@ -168,3 +168,117 @@ const (
 
 // SCIMGroupRoleMappings is an array alias.
 type SCIMGroupRoleMappings = []SCIMGroupRoleMapping
+
+// SCIMDirectoryList Typed representation of the `SCIMDirectoryList` API schema.
+type SCIMDirectoryList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []SCIMDirectory `json:"data"`
+	// TotalCount Total number of directories.
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *SCIMDirectoryList) UnmarshalJSON(data []byte) error {
+	type SCIMDirectoryListAlias SCIMDirectoryList
+	var decoded SCIMDirectoryListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SCIMDirectoryList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewSCIMDirectoryList returns a validated SCIMDirectoryList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSCIMDirectoryList(fields SCIMDirectoryList) (*SCIMDirectoryList, error) {
+	return ConstructModel(fields)
+}
+
+// SCIMGroupRoleMappingList Typed representation of the `SCIMGroupRoleMappingList` API schema.
+type SCIMGroupRoleMappingList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []SCIMGroupRoleMapping `json:"data"`
+	// TotalCount Total number of SCIM group role mappings in the directory.
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *SCIMGroupRoleMappingList) UnmarshalJSON(data []byte) error {
+	type SCIMGroupRoleMappingListAlias SCIMGroupRoleMappingList
+	var decoded SCIMGroupRoleMappingListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SCIMGroupRoleMappingList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewSCIMGroupRoleMappingList returns a validated SCIMGroupRoleMappingList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSCIMGroupRoleMappingList(fields SCIMGroupRoleMappingList) (*SCIMGroupRoleMappingList, error) {
+	return ConstructModel(fields)
+}
+
+// SCIMGroupRoleMappingDeleted Typed representation of the `SCIMGroupRoleMappingDeleted` API schema.
+type SCIMGroupRoleMappingDeleted struct {
+	// Object String representing the object's type.
+	Object SCIMGroupRoleMappingDeletedObjectEnum `json:"object"`
+	// Id The ID of the deleted SCIM group role mapping.
+	Id string `json:"id"`
+	// Deleted Whether the SCIM group role mapping was successfully deleted.
+	Deleted bool `json:"deleted"`
+}
+
+func (value *SCIMGroupRoleMappingDeleted) UnmarshalJSON(data []byte) error {
+	type SCIMGroupRoleMappingDeletedAlias SCIMGroupRoleMappingDeleted
+	var decoded SCIMGroupRoleMappingDeletedAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SCIMGroupRoleMappingDeleted(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewSCIMGroupRoleMappingDeleted returns a validated SCIMGroupRoleMappingDeleted built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSCIMGroupRoleMappingDeleted(fields SCIMGroupRoleMappingDeleted) (*SCIMGroupRoleMappingDeleted, error) {
+	return ConstructModel(fields)
+}
+
+// SCIMGroupRoleMappingDeletedObjectEnum String representing the object's type.
+type SCIMGroupRoleMappingDeletedObjectEnum string
+
+const (
+	SCIMGroupRoleMappingDeletedObjectEnumScimGroupRoleMapping SCIMGroupRoleMappingDeletedObjectEnum = "scim_group_role_mapping"
+)

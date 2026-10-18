@@ -3,7 +3,10 @@
 
 package sdk
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // SAMLConnectionAttributeMapping Typed representation of the `SAMLConnectionAttributeMapping` API schema.
 type SAMLConnectionAttributeMapping struct {
@@ -88,8 +91,154 @@ const (
 	SAMLConnectionLoginHintModeEnumOff             SAMLConnectionLoginHintModeEnum = "off"
 )
 
-// SAMLConnection is a union type
-type SAMLConnection = any
+// SAMLConnection Typed representation of the `SAMLConnection` API schema.
+type SAMLConnection struct {
+	// Object Required enumerated value serialized in the `object` wire field.
+	Object SAMLConnectionObjectEnum `json:"object"`
+	// Id Required `string` value serialized in the `id` wire field.
+	Id string `json:"id"`
+	// Name Required `string` value serialized in the `name` wire field.
+	Name string `json:"name"`
+	// Domain Optional `string` value serialized in the `domain` wire field.
+	Domain *string `json:"domain,omitempty"`
+	// Domains Optional array value serialized in the `domains` wire field.
+	Domains []string `json:"domains,omitempty"`
+	// IdpEntityId Required `string` value serialized in the `idp_entity_id` wire field.
+	IdpEntityId NullableValue[string] `json:"idp_entity_id"`
+	// IdpSsoUrl Required `string` value serialized in the `idp_sso_url` wire field.
+	IdpSsoUrl NullableValue[string] `json:"idp_sso_url"`
+	// IdpCertificate Required `string` value serialized in the `idp_certificate` wire field.
+	IdpCertificate NullableValue[string] `json:"idp_certificate"`
+	// IdpCertificateIssuedAt Unix timestamp (milliseconds) of the start of the IdP certificate validity window (X.509 NotBefore). Null when no certificate is configured.
+	IdpCertificateIssuedAt NullableValue[int64] `json:"idp_certificate_issued_at"`
+	// IdpCertificateExpiresAt Unix timestamp (milliseconds) of the end of the IdP certificate validity window (X.509 NotAfter). Null when no certificate is configured.
+	IdpCertificateExpiresAt NullableValue[int64] `json:"idp_certificate_expires_at"`
+	// IdpCertificates Every IdP signing certificate the connection trusts, primary first. A SAML response verifies against any of them.
+	IdpCertificates []SAMLConnectionIdpCertificates `json:"idp_certificates"`
+	// IdpMetadataUrl Optional `string` value serialized in the `idp_metadata_url` wire field.
+	IdpMetadataUrl *NullableValue[string] `json:"idp_metadata_url,omitempty"`
+	// IdpMetadata Optional `string` value serialized in the `idp_metadata` wire field.
+	IdpMetadata *NullableValue[string] `json:"idp_metadata,omitempty"`
+	// AcsUrl Required `string` value serialized in the `acs_url` wire field.
+	AcsUrl string `json:"acs_url"`
+	// SpEntityId Required `string` value serialized in the `sp_entity_id` wire field.
+	SpEntityId string `json:"sp_entity_id"`
+	// SpMetadataUrl Required `string` value serialized in the `sp_metadata_url` wire field.
+	SpMetadataUrl string `json:"sp_metadata_url"`
+	// OrganizationId Optional `string` value serialized in the `organization_id` wire field.
+	OrganizationId *NullableValue[string] `json:"organization_id,omitempty"`
+	// AttributeMapping Optional object value serialized in the `attribute_mapping` wire field.
+	AttributeMapping *SAMLConnectionAttributeMapping `json:"attribute_mapping,omitempty"`
+	// Active Required `boolean` value serialized in the `active` wire field.
+	Active bool `json:"active"`
+	// Provider Required `string` value serialized in the `provider` wire field.
+	Provider string `json:"provider"`
+	// UserCount Required `integer` value serialized in the `user_count` wire field.
+	UserCount int64 `json:"user_count"`
+	// SyncUserAttributes Required `boolean` value serialized in the `sync_user_attributes` wire field.
+	SyncUserAttributes bool `json:"sync_user_attributes"`
+	// AllowSubdomains Required `boolean` value serialized in the `allow_subdomains` wire field.
+	AllowSubdomains bool `json:"allow_subdomains"`
+	// AllowIdpInitiated Required `boolean` value serialized in the `allow_idp_initiated` wire field.
+	AllowIdpInitiated bool `json:"allow_idp_initiated"`
+	// DisableAdditionalIdentifications Required `boolean` value serialized in the `disable_additional_identifications` wire field.
+	DisableAdditionalIdentifications bool `json:"disable_additional_identifications"`
+	// AllowOrganizationAccountLinking Required `boolean` value serialized in the `allow_organization_account_linking` wire field.
+	AllowOrganizationAccountLinking bool `json:"allow_organization_account_linking"`
+	// ForceAuthn Enable or deactivate ForceAuthn
+	ForceAuthn bool `json:"force_authn"`
+	// LoginHint Configuration for the login_hint sent to the IdP on SSO sign-in
+	LoginHint SAMLConnectionLoginHint `json:"login_hint"`
+	// EnterpriseConnectionId Optional `string` value serialized in the `enterprise_connection_id` wire field.
+	EnterpriseConnectionId *NullableValue[string] `json:"enterprise_connection_id,omitempty"`
+	// CreatedAt Unix timestamp of creation.
+	CreatedAt int64 `json:"created_at"`
+	// UpdatedAt Unix timestamp of last update.
+	UpdatedAt int64 `json:"updated_at"`
+}
+
+func (value *SAMLConnection) UnmarshalJSON(data []byte) error {
+	type SAMLConnectionAlias SAMLConnection
+	var decoded SAMLConnectionAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SAMLConnection(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "id", "name", "idp_entity_id", "idp_sso_url", "idp_certificate", "idp_certificate_issued_at", "idp_certificate_expires_at", "idp_certificates", "acs_url", "sp_entity_id", "sp_metadata_url", "active", "provider", "user_count", "sync_user_attributes", "allow_subdomains", "allow_idp_initiated", "disable_additional_identifications", "allow_organization_account_linking", "force_authn", "login_hint", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "id", "name", "idp_certificates", "acs_url", "sp_entity_id", "sp_metadata_url", "active", "provider", "user_count", "sync_user_attributes", "allow_subdomains", "allow_idp_initiated", "disable_additional_identifications", "allow_organization_account_linking", "force_authn", "login_hint", "created_at", "updated_at"}); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["idp_metadata_url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.IdpMetadataUrl = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["idp_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.IdpMetadata = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["organization_id"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.OrganizationId = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["enterprise_connection_id"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.EnterpriseConnectionId = &NullableValue[string]{}
+	}
+	return nil
+}
+
+// NewSAMLConnection returns a validated SAMLConnection built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSAMLConnection(fields SAMLConnection) (*SAMLConnection, error) {
+	return ConstructModel(fields)
+}
+
+// SAMLConnectionObjectEnum Required enumerated value serialized in the `object` wire field.
+type SAMLConnectionObjectEnum string
+
+const (
+	SAMLConnectionObjectEnumSamlConnection SAMLConnectionObjectEnum = "saml_connection"
+)
+
+// SAMLConnectionIdpCertificates Required object value serialized in the `idp_certificates[]` wire field.
+type SAMLConnectionIdpCertificates struct {
+	// Certificate The X.509 certificate, base64 DER without PEM armor
+	Certificate string `json:"certificate"`
+	// IssuedAt Unix timestamp (milliseconds) of the X.509 NotBefore
+	IssuedAt NullableValue[int64] `json:"issued_at"`
+	// ExpiresAt Unix timestamp (milliseconds) of the X.509 NotAfter
+	ExpiresAt NullableValue[int64] `json:"expires_at"`
+}
+
+func (value *SAMLConnectionIdpCertificates) UnmarshalJSON(data []byte) error {
+	type SAMLConnectionIdpCertificatesAlias SAMLConnectionIdpCertificates
+	var decoded SAMLConnectionIdpCertificatesAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = SAMLConnectionIdpCertificates(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"certificate", "issued_at", "expires_at"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"certificate"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewSAMLConnectionIdpCertificates returns a validated SAMLConnectionIdpCertificates built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewSAMLConnectionIdpCertificates(fields SAMLConnectionIdpCertificates) (*SAMLConnectionIdpCertificates, error) {
+	return ConstructModel(fields)
+}
 
 // SAMLConnections Typed representation of the `SAMLConnections` API schema.
 type SAMLConnections struct {

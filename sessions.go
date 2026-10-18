@@ -193,7 +193,7 @@ func RefreshSession(ctx context.Context, clientConfig ClientConfig, params Refre
 	format := params.Format
 	requestOriginatingIp := params.RequestOriginatingIp
 
-	resp, err := DoUnionCfg[SessionRefresh](ctx, &clientConfig, "POST", fmt.Sprintf("/sessions/%s/refresh", EncodePathSegment(sessionId)), &RequestOpts{
+	resp, err := DoCfg[SessionRefresh](ctx, &clientConfig, "POST", fmt.Sprintf("/sessions/%s/refresh", EncodePathSegment(sessionId)), &RequestOpts{
 		Body: map[string]any{
 			"expired_token":          expiredToken,
 			"refresh_token":          refreshToken,
@@ -205,7 +205,7 @@ func RefreshSession(ctx context.Context, clientConfig ClientConfig, params Refre
 		OperationID: "RefreshSession",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors]},
 		Options:     opts,
-	}, UnmarshalSessionRefresh)
+	})
 	if err != nil {
 		return nil, err
 	}

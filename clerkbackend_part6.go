@@ -24,7 +24,7 @@ func NewWaitlistEntriesNamespace(config ClientConfig) *WaitlistEntriesNamespace 
 //	orderBy: Specify the order of results. Supported values are: - `created_at`
 //	- `email_address` - `invited_at` Use `+` for ascending or `-` for descending
 //	order. Defaults to `-created_at`.
-func (sdk *WaitlistEntriesNamespace) List(ctx context.Context, params ListWaitlistEntriesParams, opts ...RequestOption) (*SchemaSchema_45ad91e0, error) {
+func (sdk *WaitlistEntriesNamespace) List(ctx context.Context, params ListWaitlistEntriesParams, opts ...RequestOption) (*WaitlistEntries, error) {
 	return ListWaitlistEntries(ctx, sdk.config, params, opts...)
 }
 
@@ -470,7 +470,7 @@ func NewScimDirectoriesNamespace(config ClientConfig) *ScimDirectoriesNamespace 
 //	paginating the results together with `offset`.
 //	offset: Skip the first `offset` results when paginating. Needs to be an
 //	integer greater or equal to zero. To be used in conjunction with `limit`.
-func (sdk *ScimDirectoriesNamespace) List(ctx context.Context, params ListSCIMDirectoriesParams, opts ...RequestOption) (*SchemaSchema_a0ee7c0b, error) {
+func (sdk *ScimDirectoriesNamespace) List(ctx context.Context, params ListSCIMDirectoriesParams, opts ...RequestOption) (*SCIMDirectoryList, error) {
 	return ListSCIMDirectories(ctx, sdk.config, params, opts...)
 }
 
@@ -543,7 +543,7 @@ func (sdk *ScimDirectoriesNamespace) RotateApiKey(ctx context.Context, params Ro
 // Parameters:
 //
 //	scimDirectoryId: The ID of the directory.
-func (sdk *ScimDirectoriesNamespace) ListSCIMGroupRoleMappings(ctx context.Context, params ListSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_c6c780d9, error) {
+func (sdk *ScimDirectoriesNamespace) ListSCIMGroupRoleMappings(ctx context.Context, params ListSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SCIMGroupRoleMappingList, error) {
 	return ListSCIMGroupRoleMappings(ctx, sdk.config, params, opts...)
 }
 
@@ -569,7 +569,7 @@ func (sdk *ScimDirectoriesNamespace) CreateSCIMGroupRoleMapping(ctx context.Cont
 //	scimDirectoryId: The ID of the directory.
 //	mappings: The desired set of mappings. Array order sets precedence
 //	(1-indexed). An empty array clears all mappings.
-func (sdk *ScimDirectoriesNamespace) ReplaceSCIMGroupRoleMappings(ctx context.Context, params ReplaceSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_c6c780d9, error) {
+func (sdk *ScimDirectoriesNamespace) ReplaceSCIMGroupRoleMappings(ctx context.Context, params ReplaceSCIMGroupRoleMappingsParams, opts ...RequestOption) (*SCIMGroupRoleMappingList, error) {
 	return ReplaceSCIMGroupRoleMappings(ctx, sdk.config, params, opts...)
 }
 
@@ -579,7 +579,7 @@ func (sdk *ScimDirectoriesNamespace) ReplaceSCIMGroupRoleMappings(ctx context.Co
 //
 //	scimDirectoryId: The ID of the directory.
 //	mappingId: The ID of the SCIM group role mapping to delete.
-func (sdk *ScimDirectoriesNamespace) DeleteSCIMGroupRoleMapping(ctx context.Context, params DeleteSCIMGroupRoleMappingParams, opts ...RequestOption) (*SchemaSchema_b78302a9, error) {
+func (sdk *ScimDirectoriesNamespace) DeleteSCIMGroupRoleMapping(ctx context.Context, params DeleteSCIMGroupRoleMappingParams, opts ...RequestOption) (*SCIMGroupRoleMappingDeleted, error) {
 	return DeleteSCIMGroupRoleMapping(ctx, sdk.config, params, opts...)
 }
 
@@ -601,7 +601,7 @@ func NewDirectoriesNamespace(config ClientConfig) *DirectoriesNamespace {
 //	paginating the results together with `offset`.
 //	offset: Skip the first `offset` results when paginating. Needs to be an
 //	integer greater or equal to zero. To be used in conjunction with `limit`.
-func (sdk *DirectoriesNamespace) List(ctx context.Context, params ListDirectoriesParams, opts ...RequestOption) (*SchemaSchema_db46323d, error) {
+func (sdk *DirectoriesNamespace) List(ctx context.Context, params ListDirectoriesParams, opts ...RequestOption) (*DirectoryList, error) {
 	return ListDirectories(ctx, sdk.config, params, opts...)
 }
 
@@ -674,7 +674,7 @@ func (sdk *DirectoriesNamespace) RotateApiKey(ctx context.Context, params Rotate
 // Parameters:
 //
 //	directoryId: The ID of the directory.
-func (sdk *DirectoriesNamespace) ListGroupRoleMappings(ctx context.Context, params ListDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*SchemaSchema_1459c10b, error) {
+func (sdk *DirectoriesNamespace) ListGroupRoleMappings(ctx context.Context, params ListDirectoryGroupRoleMappingsParams, opts ...RequestOption) (*DirectoryGroupRoleMappingList, error) {
 	return ListDirectoryGroupRoleMappings(ctx, sdk.config, params, opts...)
 }
 

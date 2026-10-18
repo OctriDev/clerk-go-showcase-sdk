@@ -8,198 +8,6 @@ import (
 	"fmt"
 )
 
-// AdjustUserBillingCreditBalance increases or decreases the credit balance for the specified user. Each adjustment is recorded as a ledger entry. The idempotency_key parameter ensures that duplicate requests are safely handled.
-//
-// Parameters:
-//
-//	userId: The ID of the user whose credit balance to adjust
-//	amount: The credit amount in cents. Must be greater than zero.
-//	action: Whether to increase or decrease the credit balance.
-//	idempotencyKey: A unique key to ensure the adjustment is applied only once.
-//	Repeated requests with the same key return the original ledger entry.
-//	currency: The currency code (e.g. "USD"). Defaults to USD if not provided.
-//	note: An optional note to attach to the ledger entry.
-func AdjustUserBillingCreditBalance(ctx context.Context, clientConfig ClientConfig, params AdjustUserBillingCreditBalanceParams, opts ...RequestOption) (*CommerceCreditLedgerResponse, error) {
-	userId := params.UserId
-	amount := params.Amount
-	action := params.Action
-	idempotencyKey := params.IdempotencyKey
-	currency := params.Currency
-	note := params.Note
-
-	resp, err := DoCfg[CommerceCreditLedgerResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/users/%s/billing/credits", EncodePathSegment(userId)), &RequestOpts{
-		Body: map[string]any{
-			"amount":          amount,
-			"action":          action,
-			"idempotency_key": idempotencyKey,
-			"currency":        currency,
-			"note":            note,
-		},
-		OperationID: "AdjustUserBillingCreditBalance",
-		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "409": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type GetOAuthAccessTokenParams struct {
-	UserId    string
-	Provider  string
-	Paginated *bool
-	Limit     *int64
-	Offset    *int64
-}
-
-// GetOAuthAccessToken fetch the corresponding OAuth access token for a user that has previously authenticated with a particular OAuth provider. For OAuth 2.0, if the access token has expired and we have a corresponding refresh token, the access token will be refreshed transparently the new one will be returned.
-//
-// Parameters:
-//
-//	userId: The ID of the user for which to retrieve the OAuth access token
-//	provider: The ID of the OAuth provider (e.g. `oauth_google`)
-//	paginated: Whether to paginate the results. If true, the results will be
-//	paginated. If false, the results will not be paginated.
-//	limit: Applies a limit to the number of results returned. Can be used for
-//	paginating the results together with `offset`.
-//	offset: Skip the first `offset` results when paginating. Needs to be an
-//	integer greater or equal to zero. To be used in conjunction with `limit`.
-func GetOAuthAccessToken(ctx context.Context, clientConfig ClientConfig, params GetOAuthAccessTokenParams, opts ...RequestOption) ([]OAuthAccessToken_60fbbfc6, error) {
-	userId := params.UserId
-	provider := params.Provider
-	paginated := params.Paginated
-	limit := params.Limit
-	offset := params.Offset
-
-	if limit != nil {
-		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if offset != nil {
-		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[[]OAuthAccessToken_60fbbfc6](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/oauth_access_tokens/%s", EncodePathSegment(userId), EncodePathSegment(provider)), &RequestOpts{
-		Query: map[string]any{
-			"paginated": QueryValue{Value: paginated, Style: "form", Explode: true},
-			"limit":     QueryValue{Value: limit, Style: "form", Explode: true},
-			"offset":    QueryValue{Value: offset, Style: "form", Explode: true},
-		},
-		OperationID: "GetOAuthAccessToken",
-		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return resp.Data, nil
-}
-
-type UsersGetOrganizationMembershipsParams struct {
-	UserId string
-	Limit  *int64
-	Offset *int64
-}
-
-// UsersGetOrganizationMemberships retrieve a paginated list of the user's organization memberships
-//
-// Parameters:
-//
-//	userId: The ID of the user whose organization memberships we want to
-//	retrieve
-//	limit: Applies a limit to the number of results returned. Can be used for
-//	paginating the results together with `offset`.
-//	offset: Skip the first `offset` results when paginating. Needs to be an
-//	integer greater or equal to zero. To be used in conjunction with `limit`.
-func UsersGetOrganizationMemberships(ctx context.Context, clientConfig ClientConfig, params UsersGetOrganizationMembershipsParams, opts ...RequestOption) (*OrganizationMemberships, error) {
-	userId := params.UserId
-	limit := params.Limit
-	offset := params.Offset
-
-	if limit != nil {
-		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if offset != nil {
-		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[OrganizationMemberships](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/organization_memberships", EncodePathSegment(userId)), &RequestOpts{
-		Query: map[string]any{
-			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
-			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
-		},
-		OperationID: "UsersGetOrganizationMemberships",
-		Errors:      ErrorDecoders{"403": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type UsersGetOrganizationInvitationsParams struct {
-	UserId string
-	Limit  *int64
-	Offset *int64
-	Status *string
-}
-
-// UsersGetOrganizationInvitations retrieve a paginated list of the user's organization invitations
-//
-// Parameters:
-//
-//	userId: The ID of the user whose organization invitations we want to
-//	retrieve
-//	limit: Applies a limit to the number of results returned. Can be used for
-//	paginating the results together with `offset`.
-//	offset: Skip the first `offset` results when paginating. Needs to be an
-//	integer greater or equal to zero. To be used in conjunction with `limit`.
-//	status: Filter organization invitations based on their status
-func UsersGetOrganizationInvitations(ctx context.Context, clientConfig ClientConfig, params UsersGetOrganizationInvitationsParams, opts ...RequestOption) (*OrganizationInvitationsWithPublicOrganizationData, error) {
-	userId := params.UserId
-	limit := params.Limit
-	offset := params.Offset
-	status := params.Status
-
-	if limit != nil {
-		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if offset != nil {
-		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[OrganizationInvitationsWithPublicOrganizationData](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/organization_invitations", EncodePathSegment(userId)), &RequestOpts{
-		Query: map[string]any{
-			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
-			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
-			"status": QueryValue{Value: status, Style: "form", Explode: true},
-		},
-		OperationID: "UsersGetOrganizationInvitations",
-		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
 type RemoveUserPasswordParams struct {
 	UserId                 string
 	SignOutOfOtherSessions *bool
@@ -373,10 +181,10 @@ type ListUserTrustedDevicesParams struct {
 // Parameters:
 //
 //	userId: The ID of the user whose trusted devices are returned
-func ListUserTrustedDevices(ctx context.Context, clientConfig ClientConfig, params ListUserTrustedDevicesParams, opts ...RequestOption) (*SchemaSchema_36c20f95, error) {
+func ListUserTrustedDevices(ctx context.Context, clientConfig ClientConfig, params ListUserTrustedDevicesParams, opts ...RequestOption) (*TrustedDeviceList, error) {
 	userId := params.UserId
 
-	resp, err := DoCfg[SchemaSchema_36c20f95](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/trusted_devices", EncodePathSegment(userId)), &RequestOpts{
+	resp, err := DoCfg[TrustedDeviceList](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/trusted_devices", EncodePathSegment(userId)), &RequestOpts{
 		OperationID: "ListUserTrustedDevices",
 		Errors:      ErrorDecoders{"403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -424,10 +232,10 @@ type ListUserBiometricCredentialsParams struct {
 // Parameters:
 //
 //	userId: The ID of the user whose biometric credentials are returned
-func ListUserBiometricCredentials(ctx context.Context, clientConfig ClientConfig, params ListUserBiometricCredentialsParams, opts ...RequestOption) (*SchemaSchema, error) {
+func ListUserBiometricCredentials(ctx context.Context, clientConfig ClientConfig, params ListUserBiometricCredentialsParams, opts ...RequestOption) (*BiometricCredentialList, error) {
 	userId := params.UserId
 
-	resp, err := DoCfg[SchemaSchema](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/biometric_credentials", EncodePathSegment(userId)), &RequestOpts{
+	resp, err := DoCfg[BiometricCredentialList](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/biometric_credentials", EncodePathSegment(userId)), &RequestOpts{
 		OperationID: "ListUserBiometricCredentials",
 		Errors:      ErrorDecoders{"403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
 		Options:     opts,

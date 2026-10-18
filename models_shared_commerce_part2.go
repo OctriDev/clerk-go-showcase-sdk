@@ -211,7 +211,7 @@ type CommerceTotalsResponse2 struct {
 	GrandTotal CommerceMoneyResponse `json:"grand_total"`
 	// PerUnitTotals Optional array value serialized in the `per_unit_totals` wire field.
 	PerUnitTotals []CommercePerUnitTotal2 `json:"per_unit_totals,omitempty"`
-	// Credits Optional API value serialized in the `credits` wire field.
+	// Credits Optional object value serialized in the `credits` wire field.
 	Credits *NullableValue[CommerceCreditsResponse] `json:"credits,omitempty"`
 	// Discounts Information about the discounts applied to the payment
 	Discounts *NullableValue[BillingDiscountsResponse] `json:"discounts,omitempty"`

@@ -168,3 +168,117 @@ const (
 
 // DirectoryGroupRoleMappings is an array alias.
 type DirectoryGroupRoleMappings = []DirectoryGroupRoleMapping
+
+// DirectoryList Typed representation of the `DirectoryList` API schema.
+type DirectoryList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []Directory `json:"data"`
+	// TotalCount Total number of directories.
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *DirectoryList) UnmarshalJSON(data []byte) error {
+	type DirectoryListAlias DirectoryList
+	var decoded DirectoryListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = DirectoryList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewDirectoryList returns a validated DirectoryList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewDirectoryList(fields DirectoryList) (*DirectoryList, error) {
+	return ConstructModel(fields)
+}
+
+// DirectoryGroupRoleMappingList Typed representation of the `DirectoryGroupRoleMappingList` API schema.
+type DirectoryGroupRoleMappingList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []DirectoryGroupRoleMapping `json:"data"`
+	// TotalCount Total number of directory group role mappings in the directory.
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *DirectoryGroupRoleMappingList) UnmarshalJSON(data []byte) error {
+	type DirectoryGroupRoleMappingListAlias DirectoryGroupRoleMappingList
+	var decoded DirectoryGroupRoleMappingListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = DirectoryGroupRoleMappingList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewDirectoryGroupRoleMappingList returns a validated DirectoryGroupRoleMappingList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewDirectoryGroupRoleMappingList(fields DirectoryGroupRoleMappingList) (*DirectoryGroupRoleMappingList, error) {
+	return ConstructModel(fields)
+}
+
+// DirectoryGroupRoleMappingDeleted Typed representation of the `DirectoryGroupRoleMappingDeleted` API schema.
+type DirectoryGroupRoleMappingDeleted struct {
+	// Object String representing the object's type.
+	Object DirectoryGroupRoleMappingDeletedObjectEnum `json:"object"`
+	// Id The ID of the deleted directory group role mapping.
+	Id string `json:"id"`
+	// Deleted Whether the directory group role mapping was successfully deleted.
+	Deleted bool `json:"deleted"`
+}
+
+func (value *DirectoryGroupRoleMappingDeleted) UnmarshalJSON(data []byte) error {
+	type DirectoryGroupRoleMappingDeletedAlias DirectoryGroupRoleMappingDeleted
+	var decoded DirectoryGroupRoleMappingDeletedAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = DirectoryGroupRoleMappingDeleted(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewDirectoryGroupRoleMappingDeleted returns a validated DirectoryGroupRoleMappingDeleted built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewDirectoryGroupRoleMappingDeleted(fields DirectoryGroupRoleMappingDeleted) (*DirectoryGroupRoleMappingDeleted, error) {
+	return ConstructModel(fields)
+}
+
+// DirectoryGroupRoleMappingDeletedObjectEnum String representing the object's type.
+type DirectoryGroupRoleMappingDeletedObjectEnum string
+
+const (
+	DirectoryGroupRoleMappingDeletedObjectEnumDirectoryGroupRoleMapping DirectoryGroupRoleMappingDeletedObjectEnum = "directory_group_role_mapping"
+)

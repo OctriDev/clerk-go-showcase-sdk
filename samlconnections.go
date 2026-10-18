@@ -262,7 +262,7 @@ func CreateSAMLConnection(ctx context.Context, clientConfig ClientConfig, params
 		}
 	}
 
-	resp, err := DoUnionCfg[SAMLConnection](ctx, &clientConfig, "POST", "/saml_connections", &RequestOpts{
+	resp, err := DoCfg[SAMLConnection](ctx, &clientConfig, "POST", "/saml_connections", &RequestOpts{
 		Body: map[string]any{
 			"name":              name,
 			"provider":          provider,
@@ -282,7 +282,7 @@ func CreateSAMLConnection(ctx context.Context, clientConfig ClientConfig, params
 		OperationID: "CreateSAMLConnection",
 		Errors:      ErrorDecoders{"402": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "409": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
 		Options:     opts,
-	}, UnmarshalSAMLConnection)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -303,11 +303,11 @@ type GetSAMLConnectionParams struct {
 func GetSAMLConnection(ctx context.Context, clientConfig ClientConfig, params GetSAMLConnectionParams, opts ...RequestOption) (*SAMLConnection, error) {
 	samlConnectionId := params.SamlConnectionId
 
-	resp, err := DoUnionCfg[SAMLConnection](ctx, &clientConfig, "GET", fmt.Sprintf("/saml_connections/%s", EncodePathSegment(samlConnectionId)), &RequestOpts{
+	resp, err := DoCfg[SAMLConnection](ctx, &clientConfig, "GET", fmt.Sprintf("/saml_connections/%s", EncodePathSegment(samlConnectionId)), &RequestOpts{
 		OperationID: "GetSAMLConnection",
 		Errors:      ErrorDecoders{"402": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,
-	}, UnmarshalSAMLConnection)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -410,7 +410,7 @@ func UpdateSAMLConnection(ctx context.Context, clientConfig ClientConfig, params
 		}
 	}
 
-	resp, err := DoUnionCfg[SAMLConnection](ctx, &clientConfig, "PATCH", fmt.Sprintf("/saml_connections/%s", EncodePathSegment(samlConnectionId)), &RequestOpts{
+	resp, err := DoCfg[SAMLConnection](ctx, &clientConfig, "PATCH", fmt.Sprintf("/saml_connections/%s", EncodePathSegment(samlConnectionId)), &RequestOpts{
 		Body: map[string]any{
 			"name":                               name,
 			"domain":                             domain,
@@ -436,7 +436,7 @@ func UpdateSAMLConnection(ctx context.Context, clientConfig ClientConfig, params
 		OperationID: "UpdateSAMLConnection",
 		Errors:      ErrorDecoders{"402": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "409": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
 		Options:     opts,
-	}, UnmarshalSAMLConnection)
+	})
 	if err != nil {
 		return nil, err
 	}

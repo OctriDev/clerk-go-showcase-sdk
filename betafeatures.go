@@ -5,31 +5,6 @@ package sdk
 
 import "context"
 
-type SchemaSchema_382061cc struct {
-	// Object String representing the object's type. Objects of the same type share the same value.
-	Object                *SchemaSchemaObjectEnum_e5de16a2 `json:"object,omitempty"`
-	Id                    *string                          `json:"id,omitempty"`
-	RestrictedToAllowlist *bool                            `json:"restricted_to_allowlist,omitempty"`
-	FromEmailAddress      *string                          `json:"from_email_address,omitempty"`
-	ProgressiveSignUp     *bool                            `json:"progressive_sign_up,omitempty"`
-	// EnhancedEmailDeliverability Deprecated. This setting is retired and no longer affects email delivery; all email is sent through the instance's configured email sending domain. The field is preserved for API compatibility only and will be removed in a future version.
-	EnhancedEmailDeliverability *bool `json:"enhanced_email_deliverability,omitempty"`
-}
-
-// NewSchemaSchema_382061cc returns a validated SchemaSchema_382061cc built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_382061cc(fields SchemaSchema_382061cc) (*SchemaSchema_382061cc, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum_e5de16a2 String representing the object's type. Objects of the same type share the same value.
-type SchemaSchemaObjectEnum_e5de16a2 string
-
-const (
-	SchemaSchemaObjectEnum_e5de16a2InstanceSettings SchemaSchemaObjectEnum_e5de16a2 = "instance_settings"
-)
-
 type UpdateInstanceAuthConfigParams struct {
 	RestrictedToAllowlist *NullableValue[bool]
 	FromEmailAddress      *NullableValue[string]
@@ -54,13 +29,13 @@ type UpdateInstanceAuthConfigParams struct {
 //	testMode: Toggles test mode for this instance, allowing the use of test
 //	email addresses and phone numbers. Defaults to true for development
 //	instances.
-func UpdateInstanceAuthConfig(ctx context.Context, clientConfig ClientConfig, params UpdateInstanceAuthConfigParams, opts ...RequestOption) (*SchemaSchema_382061cc, error) {
+func UpdateInstanceAuthConfig(ctx context.Context, clientConfig ClientConfig, params UpdateInstanceAuthConfigParams, opts ...RequestOption) (*InstanceSettings, error) {
 	restrictedToAllowlist := params.RestrictedToAllowlist
 	fromEmailAddress := params.FromEmailAddress
 	progressiveSignUp := params.ProgressiveSignUp
 	testMode := params.TestMode
 
-	resp, err := DoCfg[SchemaSchema_382061cc](ctx, &clientConfig, "PATCH", "/beta_features/instance_settings", &RequestOpts{
+	resp, err := DoCfg[InstanceSettings](ctx, &clientConfig, "PATCH", "/beta_features/instance_settings", &RequestOpts{
 		Body: map[string]any{
 			"restricted_to_allowlist": restrictedToAllowlist,
 			"from_email_address":      fromEmailAddress,

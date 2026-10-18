@@ -167,7 +167,7 @@ func (sdk *EmailAddressesNamespace) UpdateEmailAddress(ctx context.Context, para
 // Parameters:
 //
 //	emailAddressId: The ID of the email address to send the verification code to
-func (sdk *EmailAddressesNamespace) PrepareEmailAddressVerification(ctx context.Context, params PrepareEmailAddressVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func (sdk *EmailAddressesNamespace) PrepareEmailAddressVerification(ctx context.Context, params PrepareEmailAddressVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	return PrepareEmailAddressVerification(ctx, sdk.config, params, opts...)
 }
 
@@ -179,7 +179,7 @@ func (sdk *EmailAddressesNamespace) PrepareEmailAddressVerification(ctx context.
 //	verificationId: The ID of the verification to check, such as one returned by
 //	prepare_verification
 //	code: The verification code that was sent to the email address
-func (sdk *EmailAddressesNamespace) AttemptEmailAddressVerification(ctx context.Context, params AttemptEmailAddressVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func (sdk *EmailAddressesNamespace) AttemptEmailAddressVerification(ctx context.Context, params AttemptEmailAddressVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	return AttemptEmailAddressVerification(ctx, sdk.config, params, opts...)
 }
 
@@ -282,7 +282,7 @@ func (sdk *PhoneNumbersNamespace) Update(ctx context.Context, params UpdatePhone
 // Parameters:
 //
 //	phoneNumberId: The ID of the phone number to send the verification code to
-func (sdk *PhoneNumbersNamespace) PrepareVerification(ctx context.Context, params PreparePhoneNumberVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func (sdk *PhoneNumbersNamespace) PrepareVerification(ctx context.Context, params PreparePhoneNumberVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	return PreparePhoneNumberVerification(ctx, sdk.config, params, opts...)
 }
 
@@ -294,7 +294,7 @@ func (sdk *PhoneNumbersNamespace) PrepareVerification(ctx context.Context, param
 //	verificationId: The ID of the verification to check, such as one returned by
 //	prepare_verification
 //	code: The verification code that was sent to the phone number
-func (sdk *PhoneNumbersNamespace) AttemptVerification(ctx context.Context, params AttemptPhoneNumberVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func (sdk *PhoneNumbersNamespace) AttemptVerification(ctx context.Context, params AttemptPhoneNumberVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	return AttemptPhoneNumberVerification(ctx, sdk.config, params, opts...)
 }
 

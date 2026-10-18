@@ -49,7 +49,7 @@ func (sdk *InvitationsNamespace) Delete(ctx context.Context, params DeleteInvita
 // Parameters:
 //
 //	invitationId: The ID of the invitation to be revoked
-func (sdk *InvitationsNamespace) Revoke(ctx context.Context, params RevokeInvitationParams, opts ...RequestOption) (any, error) {
+func (sdk *InvitationsNamespace) Revoke(ctx context.Context, params RevokeInvitationParams, opts ...RequestOption) (*InvitationRevoked, error) {
 	return RevokeInvitation(ctx, sdk.config, params, opts...)
 }
 
@@ -284,7 +284,7 @@ func NewBetaFeaturesNamespace(config ClientConfig) *BetaFeaturesNamespace {
 //	testMode: Toggles test mode for this instance, allowing the use of test
 //	email addresses and phone numbers. Defaults to true for development
 //	instances.
-func (sdk *BetaFeaturesNamespace) UpdateInstanceAuthConfig(ctx context.Context, params UpdateInstanceAuthConfigParams, opts ...RequestOption) (*SchemaSchema_382061cc, error) {
+func (sdk *BetaFeaturesNamespace) UpdateInstanceAuthConfig(ctx context.Context, params UpdateInstanceAuthConfigParams, opts ...RequestOption) (*InstanceSettings, error) {
 	return UpdateInstanceAuthConfig(ctx, sdk.config, params, opts...)
 }
 
