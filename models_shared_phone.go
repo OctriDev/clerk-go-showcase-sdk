@@ -110,6 +110,19 @@ func (u *PhoneNumberVerification) UnmarshalJSON(data []byte) error {
 			}
 		}
 	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationOtp
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationOtp = &lossless0
+			return nil
+		}
+		var lossless1 VerificationAdmin
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationAdmin = &lossless1
+			return nil
+		}
+	}
 	var verificationotp VerificationOtp
 	if err := json.Unmarshal(data, &verificationotp); err == nil && isNonEmptyPhoneNumberVerificationVerificationOtp(verificationotp) {
 		u.VerificationOtp = &verificationotp

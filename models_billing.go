@@ -61,9 +61,9 @@ type BillingPriceResponse struct {
 	Amount int64 `json:"amount"`
 	// AnnualMonthlyAmount The monthly amount in cents when billed annually.
 	AnnualMonthlyAmount int64 `json:"annual_monthly_amount"`
-	// Fee Required API value serialized in the `fee` wire field.
+	// Fee Required object value serialized in the `fee` wire field.
 	Fee NullableValue[CommerceMoneyResponse] `json:"fee"`
-	// AnnualMonthlyFee Required API value serialized in the `annual_monthly_fee` wire field.
+	// AnnualMonthlyFee Required object value serialized in the `annual_monthly_fee` wire field.
 	AnnualMonthlyFee NullableValue[CommerceMoneyResponse] `json:"annual_monthly_fee"`
 	// Description The description of the price.
 	Description *NullableValue[string] `json:"description,omitempty"`
@@ -341,11 +341,11 @@ type CommercePlan2 struct {
 	Id string `json:"id"`
 	// Name The name of the commerce plan.
 	Name string `json:"name"`
-	// Fee Required API value serialized in the `fee` wire field.
+	// Fee Required object value serialized in the `fee` wire field.
 	Fee NullableValue[CommerceMoneyResponse] `json:"fee"`
-	// AnnualMonthlyFee Required API value serialized in the `annual_monthly_fee` wire field.
+	// AnnualMonthlyFee Required object value serialized in the `annual_monthly_fee` wire field.
 	AnnualMonthlyFee NullableValue[CommerceMoneyResponse] `json:"annual_monthly_fee"`
-	// AnnualFee Required API value serialized in the `annual_fee` wire field.
+	// AnnualFee Required object value serialized in the `annual_fee` wire field.
 	AnnualFee NullableValue[CommerceMoneyResponse] `json:"annual_fee"`
 	// Amount The amount in cents for the plan.
 	Amount int64 `json:"amount"`

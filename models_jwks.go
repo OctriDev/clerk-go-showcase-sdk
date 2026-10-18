@@ -470,6 +470,44 @@ type JWKSKeysItem struct {
 func (u *JWKSKeysItem) UnmarshalJSON(data []byte) error {
 	*u = JWKSKeysItem{}
 	var refusal error
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 JWKSEd25519PublicKey
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.JWKSEd25519PublicKey = &lossless0
+			return nil
+		}
+		var lossless1 JWKSEcdsaPublicKey
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.JWKSEcdsaPublicKey = &lossless1
+			return nil
+		}
+		var lossless2 JWKSRsaPublicKey
+		if json.Unmarshal(data, &lossless2) == nil && keepsEveryKey(raw, lossless2) {
+			u.JWKSRsaPublicKey = &lossless2
+			return nil
+		}
+		var lossless3 JWKSEd25519PrivateKey
+		if json.Unmarshal(data, &lossless3) == nil && keepsEveryKey(raw, lossless3) {
+			u.JWKSEd25519PrivateKey = &lossless3
+			return nil
+		}
+		var lossless4 JWKSEcdsaPrivateKey
+		if json.Unmarshal(data, &lossless4) == nil && keepsEveryKey(raw, lossless4) {
+			u.JWKSEcdsaPrivateKey = &lossless4
+			return nil
+		}
+		var lossless5 JWKSRsaPrivateKey
+		if json.Unmarshal(data, &lossless5) == nil && keepsEveryKey(raw, lossless5) {
+			u.JWKSRsaPrivateKey = &lossless5
+			return nil
+		}
+		var lossless6 JWKSSymmetricKey
+		if json.Unmarshal(data, &lossless6) == nil && keepsEveryKey(raw, lossless6) {
+			u.JWKSSymmetricKey = &lossless6
+			return nil
+		}
+	}
 	var jwksed25519publickey JWKSEd25519PublicKey
 	if err := json.Unmarshal(data, &jwksed25519publickey); err == nil && isNonEmptyJWKSKeysItemJWKSEd25519PublicKey(jwksed25519publickey) {
 		u.JWKSEd25519PublicKey = &jwksed25519publickey

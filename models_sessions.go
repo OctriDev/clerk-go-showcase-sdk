@@ -165,6 +165,19 @@ func (u *SessionRefresh) UnmarshalJSON(data []byte) error {
 			}
 		}
 	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 Token
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.Token = &lossless0
+			return nil
+		}
+		var lossless1 Cookies
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.Cookies = &lossless1
+			return nil
+		}
+	}
 	var token Token
 	if err := json.Unmarshal(data, &token); err == nil && isNonEmptySessionRefreshToken(token) {
 		u.Token = &token

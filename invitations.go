@@ -275,10 +275,10 @@ type RevokeInvitationParams struct {
 // Parameters:
 //
 //	invitationId: The ID of the invitation to be revoked
-func RevokeInvitation(ctx context.Context, clientConfig ClientConfig, params RevokeInvitationParams, opts ...RequestOption) (any, error) {
+func RevokeInvitation(ctx context.Context, clientConfig ClientConfig, params RevokeInvitationParams, opts ...RequestOption) (*InvitationRevoked, error) {
 	invitationId := params.InvitationId
 
-	resp, err := DoAnyCfg(ctx, &clientConfig, "POST", fmt.Sprintf("/invitations/%s/revoke", EncodePathSegment(invitationId)), &RequestOpts{
+	resp, err := DoCfg[InvitationRevoked](ctx, &clientConfig, "POST", fmt.Sprintf("/invitations/%s/revoke", EncodePathSegment(invitationId)), &RequestOpts{
 		OperationID: "RevokeInvitation",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -286,5 +286,5 @@ func RevokeInvitation(ctx context.Context, clientConfig ClientConfig, params Rev
 	if err != nil {
 		return nil, err
 	}
-	return resp.Data, nil
+	return &resp.Data, nil
 }

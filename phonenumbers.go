@@ -158,10 +158,10 @@ type PreparePhoneNumberVerificationParams struct {
 // Parameters:
 //
 //	phoneNumberId: The ID of the phone number to send the verification code to
-func PreparePhoneNumberVerification(ctx context.Context, clientConfig ClientConfig, params PreparePhoneNumberVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func PreparePhoneNumberVerification(ctx context.Context, clientConfig ClientConfig, params PreparePhoneNumberVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	phoneNumberId := params.PhoneNumberId
 
-	resp, err := DoCfg[SchemaSchema_3e93ce8e](ctx, &clientConfig, "POST", fmt.Sprintf("/phone_numbers/%s/prepare_verification", EncodePathSegment(phoneNumberId)), &RequestOpts{
+	resp, err := DoCfg[VerificationResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/phone_numbers/%s/prepare_verification", EncodePathSegment(phoneNumberId)), &RequestOpts{
 		OperationID: "PreparePhoneNumberVerification",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "429": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -186,12 +186,12 @@ type AttemptPhoneNumberVerificationParams struct {
 //	verificationId: The ID of the verification to check, such as one returned by
 //	prepare_verification
 //	code: The verification code that was sent to the phone number
-func AttemptPhoneNumberVerification(ctx context.Context, clientConfig ClientConfig, params AttemptPhoneNumberVerificationParams, opts ...RequestOption) (*SchemaSchema_3e93ce8e, error) {
+func AttemptPhoneNumberVerification(ctx context.Context, clientConfig ClientConfig, params AttemptPhoneNumberVerificationParams, opts ...RequestOption) (*VerificationResponse, error) {
 	phoneNumberId := params.PhoneNumberId
 	verificationId := params.VerificationId
 	code := params.Code
 
-	resp, err := DoCfg[SchemaSchema_3e93ce8e](ctx, &clientConfig, "POST", fmt.Sprintf("/phone_numbers/%s/attempt_verification", EncodePathSegment(phoneNumberId)), &RequestOpts{
+	resp, err := DoCfg[VerificationResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/phone_numbers/%s/attempt_verification", EncodePathSegment(phoneNumberId)), &RequestOpts{
 		Body: map[string]any{
 			"verification_id": verificationId,
 			"code":            code,

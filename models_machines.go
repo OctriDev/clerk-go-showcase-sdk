@@ -65,6 +65,7 @@ const (
 	MachineWithoutScopedMachinesObjectEnumMachine MachineWithoutScopedMachinesObjectEnum = "machine"
 )
 
+// MachineVariant1 Required object value serialized in the `data[]` wire field.
 type MachineVariant1 struct {
 	// ScopedMachines Array of machines this machine has access to.
 	ScopedMachines []MachineWithoutScopedMachines `json:"scoped_machines"`
@@ -196,4 +197,260 @@ type MachineScopeObjectEnum string
 
 const (
 	MachineScopeObjectEnumMachineScope MachineScopeObjectEnum = "machine_scope"
+)
+
+// MachineList Typed representation of the `MachineList` API schema.
+type MachineList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []Machine `json:"data"`
+	// TotalCount Total number of machines
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *MachineList) UnmarshalJSON(data []byte) error {
+	type MachineListAlias MachineList
+	var decoded MachineListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMachineList returns a validated MachineList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineList(fields MachineList) (*MachineList, error) {
+	return ConstructModel(fields)
+}
+
+type MachineCreatedVariant1 struct {
+	// SecretKey The secret key for the machine, only returned upon creation.
+	SecretKey string `json:"secret_key"`
+}
+
+func (value *MachineCreatedVariant1) UnmarshalJSON(data []byte) error {
+	type MachineCreatedVariant1Alias MachineCreatedVariant1
+	var decoded MachineCreatedVariant1Alias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineCreatedVariant1(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"secret_key"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"secret_key"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMachineCreatedVariant1 returns a validated MachineCreatedVariant1 built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineCreatedVariant1(fields MachineCreatedVariant1) (*MachineCreatedVariant1, error) {
+	return ConstructModel(fields)
+}
+
+// MachineCreated Typed representation of the `MachineCreated` API schema.
+type MachineCreated struct {
+	// Object Required enumerated value serialized in the `object` wire field.
+	Object MachineWithoutScopedMachinesObjectEnum `json:"object"`
+	// Id Unique identifier for the machine.
+	Id string `json:"id"`
+	// Name The name of the machine.
+	Name string `json:"name"`
+	// InstanceId The ID of the instance this machine belongs to.
+	InstanceId string `json:"instance_id"`
+	// CreatedAt Unix timestamp of creation.
+	CreatedAt int64 `json:"created_at"`
+	// UpdatedAt Unix timestamp of last update.
+	UpdatedAt int64 `json:"updated_at"`
+	// DefaultTokenTtl The default time-to-live (TTL) in seconds for tokens created by this machine.
+	DefaultTokenTtl *int64 `json:"default_token_ttl,omitempty"`
+	// ScopedMachines Array of machines this machine has access to.
+	ScopedMachines []MachineWithoutScopedMachines `json:"scoped_machines"`
+	// SecretKey The secret key for the machine, only returned upon creation.
+	SecretKey string `json:"secret_key"`
+}
+
+func (value *MachineCreated) UnmarshalJSON(data []byte) error {
+	type MachineCreatedAlias MachineCreated
+	var decoded MachineCreatedAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineCreated(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "id", "name", "instance_id", "created_at", "updated_at", "scoped_machines", "secret_key"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "id", "name", "instance_id", "created_at", "updated_at", "scoped_machines", "secret_key"}); err != nil {
+		return err
+	}
+	if err := ValidateLength("name", value.Name, LengthOpts{Min: Ptr[int](1), Max: Ptr[int](255)}); err != nil {
+		return err
+	}
+	if value.DefaultTokenTtl != nil {
+		if err := ValidateRange("default_token_ttl", *value.DefaultTokenTtl, RangeOpts{Min: Ptr[float64](1)}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// NewMachineCreated returns a validated MachineCreated built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineCreated(fields MachineCreated) (*MachineCreated, error) {
+	return ConstructModel(fields)
+}
+
+// MachineDeleted Typed representation of the `MachineDeleted` API schema.
+type MachineDeleted struct {
+	// Object String representing the object's type.
+	Object MachineDeletedObjectEnum `json:"object"`
+	// Id The ID of the deleted machine
+	Id string `json:"id"`
+	// Deleted Whether the machine was successfully deleted
+	Deleted bool `json:"deleted"`
+}
+
+func (value *MachineDeleted) UnmarshalJSON(data []byte) error {
+	type MachineDeletedAlias MachineDeleted
+	var decoded MachineDeletedAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineDeleted(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMachineDeleted returns a validated MachineDeleted built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineDeleted(fields MachineDeleted) (*MachineDeleted, error) {
+	return ConstructModel(fields)
+}
+
+// MachineDeletedObjectEnum String representing the object's type.
+type MachineDeletedObjectEnum string
+
+const (
+	MachineDeletedObjectEnumMachine MachineDeletedObjectEnum = "machine"
+)
+
+// MachineSecretKey Typed representation of the `MachineSecretKey` API schema.
+type MachineSecretKey struct {
+	// Object String representing the object's type.
+	Object MachineSecretKeyObjectEnum `json:"object"`
+	// Secret The secret key for the machine.
+	Secret string `json:"secret"`
+}
+
+func (value *MachineSecretKey) UnmarshalJSON(data []byte) error {
+	type MachineSecretKeyAlias MachineSecretKey
+	var decoded MachineSecretKeyAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineSecretKey(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "secret"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "secret"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMachineSecretKey returns a validated MachineSecretKey built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineSecretKey(fields MachineSecretKey) (*MachineSecretKey, error) {
+	return ConstructModel(fields)
+}
+
+// MachineSecretKeyObjectEnum String representing the object's type.
+type MachineSecretKeyObjectEnum string
+
+const (
+	MachineSecretKeyObjectEnumMachineSecretKey MachineSecretKeyObjectEnum = "machine_secret_key"
+)
+
+// MachineScopeDeleted Typed representation of the `MachineScopeDeleted` API schema.
+type MachineScopeDeleted struct {
+	// Object String representing the object's type.
+	Object MachineScopeDeletedObjectEnum `json:"object"`
+	// FromMachineId The ID of the machine that had access to the target machine
+	FromMachineId string `json:"from_machine_id"`
+	// ToMachineId The ID of the machine that was being accessed
+	ToMachineId string `json:"to_machine_id"`
+	// Deleted Whether the machine scope was successfully deleted
+	Deleted bool `json:"deleted"`
+}
+
+func (value *MachineScopeDeleted) UnmarshalJSON(data []byte) error {
+	type MachineScopeDeletedAlias MachineScopeDeleted
+	var decoded MachineScopeDeletedAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = MachineScopeDeleted(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"object", "from_machine_id", "to_machine_id", "deleted"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"object", "from_machine_id", "to_machine_id", "deleted"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewMachineScopeDeleted returns a validated MachineScopeDeleted built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewMachineScopeDeleted(fields MachineScopeDeleted) (*MachineScopeDeleted, error) {
+	return ConstructModel(fields)
+}
+
+// MachineScopeDeletedObjectEnum String representing the object's type.
+type MachineScopeDeletedObjectEnum string
+
+const (
+	MachineScopeDeletedObjectEnumMachineScope MachineScopeDeletedObjectEnum = "machine_scope"
 )

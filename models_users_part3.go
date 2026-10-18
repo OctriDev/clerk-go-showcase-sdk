@@ -3,7 +3,213 @@
 
 package sdk
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
+
+const (
+	VerificationGoogleOneTapObjectEnumVerificationGoogleOneTap VerificationGoogleOneTapObjectEnum = "verification_google_one_tap"
+)
+
+func (value *VerificationGoogleOneTapObjectEnum) UnmarshalJSON(data []byte) error {
+	var raw string
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return err
+	}
+	switch raw {
+	case "verification_google_one_tap":
+		*value = VerificationGoogleOneTapObjectEnum(raw)
+		return nil
+	default:
+		return &SdkValidationError{Field: "VerificationGoogleOneTapObjectEnum", Code: "enum", Message: fmt.Sprintf("unknown VerificationGoogleOneTapObjectEnum: %v", raw)}
+	}
+}
+
+// VerificationGoogleOneTapStatusEnum Required enumerated value serialized in the `status` wire field.
+type VerificationGoogleOneTapStatusEnum string
+
+const (
+	VerificationGoogleOneTapStatusEnumUnverified VerificationGoogleOneTapStatusEnum = "unverified"
+	VerificationGoogleOneTapStatusEnumVerified   VerificationGoogleOneTapStatusEnum = "verified"
+)
+
+// VerificationGoogleOneTapStrategyEnum Required enumerated value serialized in the `strategy` wire field.
+type VerificationGoogleOneTapStrategyEnum string
+
+const (
+	VerificationGoogleOneTapStrategyEnumGoogleOneTap VerificationGoogleOneTapStrategyEnum = "google_one_tap"
+)
+
+// TrustedDeviceList Typed representation of the `TrustedDeviceList` API schema.
+type TrustedDeviceList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []TrustedDevice `json:"data"`
+	// TotalCount Total number of trusted devices
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *TrustedDeviceList) UnmarshalJSON(data []byte) error {
+	type TrustedDeviceListAlias TrustedDeviceList
+	var decoded TrustedDeviceListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = TrustedDeviceList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewTrustedDeviceList returns a validated TrustedDeviceList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewTrustedDeviceList(fields TrustedDeviceList) (*TrustedDeviceList, error) {
+	return ConstructModel(fields)
+}
+
+// BiometricCredentialList Typed representation of the `BiometricCredentialList` API schema.
+type BiometricCredentialList struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []BiometricCredential `json:"data"`
+	// TotalCount Total number of biometric credentials
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *BiometricCredentialList) UnmarshalJSON(data []byte) error {
+	type BiometricCredentialListAlias BiometricCredentialList
+	var decoded BiometricCredentialListAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = BiometricCredentialList(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewBiometricCredentialList returns a validated BiometricCredentialList built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewBiometricCredentialList(fields BiometricCredentialList) (*BiometricCredentialList, error) {
+	return ConstructModel(fields)
+}
+
+// Web3WalletVerification represents a union type.
+type Web3WalletVerification struct {
+	VerificationWeb3  *VerificationWeb3
+	VerificationAdmin *VerificationAdmin
+
+	// Unknown holds a member whose object names no branch this SDK knows, as received.
+	Unknown json.RawMessage
+}
+
+func (u *Web3WalletVerification) UnmarshalJSON(data []byte) error {
+	*u = Web3WalletVerification{}
+	var refusal error
+	var object map[string]json.RawMessage
+	if err := json.Unmarshal(data, &object); err == nil {
+		if rawDiscriminator, ok := object["object"]; ok {
+			var discriminatorValue string
+			if err := json.Unmarshal(rawDiscriminator, &discriminatorValue); err == nil {
+				switch discriminatorValue {
+				case "verification_web3":
+					var verificationweb3 VerificationWeb3
+					if err := json.Unmarshal(data, &verificationweb3); err != nil {
+						return err
+					}
+					u.VerificationWeb3 = &verificationweb3
+					return nil
+				case "verification_admin":
+					var verificationadmin VerificationAdmin
+					if err := json.Unmarshal(data, &verificationadmin); err != nil {
+						return err
+					}
+					u.VerificationAdmin = &verificationadmin
+					return nil
+				default:
+					u.Unknown = append(json.RawMessage(nil), data...)
+					return nil
+				}
+			}
+		}
+	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationWeb3
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationWeb3 = &lossless0
+			return nil
+		}
+		var lossless1 VerificationAdmin
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationAdmin = &lossless1
+			return nil
+		}
+	}
+	var verificationweb3 VerificationWeb3
+	if err := json.Unmarshal(data, &verificationweb3); err == nil && isNonEmptyWeb3WalletVerificationVerificationWeb3(verificationweb3) {
+		u.VerificationWeb3 = &verificationweb3
+		return nil
+	} else if _, refused := err.(*SdkValidationError); refused && refusal == nil {
+		refusal = err
+	}
+	var verificationadmin VerificationAdmin
+	if err := json.Unmarshal(data, &verificationadmin); err == nil && isNonEmptyWeb3WalletVerificationVerificationAdmin(verificationadmin) {
+		u.VerificationAdmin = &verificationadmin
+		return nil
+	} else if _, refused := err.(*SdkValidationError); refused && refusal == nil {
+		refusal = err
+	}
+	return refusal
+}
+
+func (u Web3WalletVerification) MarshalJSON() ([]byte, error) {
+	if u.VerificationWeb3 != nil {
+		return json.Marshal(u.VerificationWeb3)
+	}
+	if u.VerificationAdmin != nil {
+		return json.Marshal(u.VerificationAdmin)
+	}
+	if u.Unknown != nil {
+		return u.Unknown, nil
+	}
+	return []byte("null"), nil
+}
+
+func isNonEmptyWeb3WalletVerificationVerificationWeb3(v VerificationWeb3) bool {
+	b, _ := json.Marshal(v)
+	return string(b) != "{}" && string(b) != "null"
+}
+
+func isNonEmptyWeb3WalletVerificationVerificationAdmin(v VerificationAdmin) bool {
+	b, _ := json.Marshal(v)
+	return string(b) != "{}" && string(b) != "null"
+}
+
+// UnmarshalWeb3WalletVerification converts an untyped value to Web3WalletVerification.
+func UnmarshalWeb3WalletVerification(v any) Web3WalletVerification {
+	b, _ := json.Marshal(v)
+	var result Web3WalletVerification
+	_ = json.Unmarshal(b, &result)
+	return result
+}
 
 // ExternalAccountWithVerificationVerification represents a union type.
 type ExternalAccountWithVerificationVerification struct {
@@ -42,6 +248,19 @@ func (u *ExternalAccountWithVerificationVerification) UnmarshalJSON(data []byte)
 					return nil
 				}
 			}
+		}
+	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationOauth
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationOauth = &lossless0
+			return nil
+		}
+		var lossless1 VerificationGoogleOneTap
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationGoogleOneTap = &lossless1
+			return nil
 		}
 	}
 	var verificationoauth VerificationOauth
@@ -129,6 +348,19 @@ func (u *SAMLAccountVerification) UnmarshalJSON(data []byte) error {
 					return nil
 				}
 			}
+		}
+	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationSaml
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationSaml = &lossless0
+			return nil
+		}
+		var lossless1 VerificationTicket
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationTicket = &lossless1
+			return nil
 		}
 	}
 	var verificationsaml VerificationSaml
@@ -224,6 +456,24 @@ func (u *EnterpriseAccountVerification) UnmarshalJSON(data []byte) error {
 					return nil
 				}
 			}
+		}
+	}
+	var raw map[string]json.RawMessage
+	if json.Unmarshal(data, &raw) == nil {
+		var lossless0 VerificationTicket
+		if json.Unmarshal(data, &lossless0) == nil && keepsEveryKey(raw, lossless0) {
+			u.VerificationTicket = &lossless0
+			return nil
+		}
+		var lossless1 VerificationSaml
+		if json.Unmarshal(data, &lossless1) == nil && keepsEveryKey(raw, lossless1) {
+			u.VerificationSaml = &lossless1
+			return nil
+		}
+		var lossless2 VerificationOauth
+		if json.Unmarshal(data, &lossless2) == nil && keepsEveryKey(raw, lossless2) {
+			u.VerificationOauth = &lossless2
+			return nil
 		}
 	}
 	var verificationticket VerificationTicket

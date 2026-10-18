@@ -625,3 +625,51 @@ type VerificationScimStrategyEnum string
 const (
 	VerificationScimStrategyEnumScim VerificationScimStrategyEnum = "scim"
 )
+
+// VerificationResponse Typed representation of the `VerificationResponse` API schema.
+type VerificationResponse struct {
+	// Object The type of the verification object.
+	Object *string `json:"object,omitempty"`
+	// Id The ID of the verification. Pass this to attempt_verification.
+	Id *string `json:"id,omitempty"`
+	// Status The status of the verification (unverified, verified, expired, or failed).
+	Status *string `json:"status,omitempty"`
+	// Strategy The verification strategy (email_code or phone_code).
+	Strategy *string `json:"strategy,omitempty"`
+	// Attempts The number of attempts made against this verification.
+	Attempts *NullableValue[int64] `json:"attempts,omitempty"`
+	// ExpireAt Unix timestamp (milliseconds) at which the code expires.
+	ExpireAt *NullableValue[int64] `json:"expire_at,omitempty"`
+	// Channel The channel the code was sent over (phone numbers only).
+	Channel *NullableValue[string] `json:"channel,omitempty"`
+}
+
+func (value *VerificationResponse) UnmarshalJSON(data []byte) error {
+	type VerificationResponseAlias VerificationResponse
+	var decoded VerificationResponseAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = VerificationResponse(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["attempts"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Attempts = &NullableValue[int64]{}
+	}
+	if raw, ok := rawFields["expire_at"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.ExpireAt = &NullableValue[int64]{}
+	}
+	if raw, ok := rawFields["channel"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Channel = &NullableValue[string]{}
+	}
+	return nil
+}
+
+// NewVerificationResponse returns a validated VerificationResponse built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewVerificationResponse(fields VerificationResponse) (*VerificationResponse, error) {
+	return ConstructModel(fields)
+}

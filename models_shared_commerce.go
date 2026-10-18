@@ -155,9 +155,9 @@ func NewCommercePayerCreditResponse(fields CommercePayerCreditResponse) (*Commer
 
 // CommerceCreditsResponse Typed representation of the `CommerceCreditsResponse` API schema.
 type CommerceCreditsResponse struct {
-	// Proration Required API value serialized in the `proration` wire field.
+	// Proration Required object value serialized in the `proration` wire field.
 	Proration NullableValue[CommerceProrationCreditDetailResponse] `json:"proration"`
-	// Payer Required API value serialized in the `payer` wire field.
+	// Payer Required object value serialized in the `payer` wire field.
 	Payer NullableValue[CommercePayerCreditResponse] `json:"payer"`
 	// Total Required object value serialized in the `total` wire field.
 	Total CommerceMoneyResponse `json:"total"`
@@ -275,11 +275,11 @@ type CommercePlan struct {
 	Id string `json:"id"`
 	// Name The name of the plan.
 	Name string `json:"name"`
-	// Fee Required API value serialized in the `fee` wire field.
+	// Fee Required object value serialized in the `fee` wire field.
 	Fee NullableValue[CommerceMoneyResponse] `json:"fee"`
-	// AnnualMonthlyFee Required API value serialized in the `annual_monthly_fee` wire field.
+	// AnnualMonthlyFee Required object value serialized in the `annual_monthly_fee` wire field.
 	AnnualMonthlyFee NullableValue[CommerceMoneyResponse] `json:"annual_monthly_fee"`
-	// AnnualFee Required API value serialized in the `annual_fee` wire field.
+	// AnnualFee Required object value serialized in the `annual_fee` wire field.
 	AnnualFee NullableValue[CommerceMoneyResponse] `json:"annual_fee"`
 	// Description The description of the plan.
 	Description NullableValue[string] `json:"description"`
@@ -559,7 +559,7 @@ func NewCommerceProrationDiscountResponse(fields CommerceProrationDiscountRespon
 
 // CommerceDiscountsResponse Typed representation of the `CommerceDiscountsResponse` API schema.
 type CommerceDiscountsResponse struct {
-	// Proration Required API value serialized in the `proration` wire field.
+	// Proration Required object value serialized in the `proration` wire field.
 	Proration NullableValue[CommerceProrationDiscountResponse] `json:"proration"`
 	// Total Required object value serialized in the `total` wire field.
 	Total CommerceMoneyResponse `json:"total"`
@@ -604,9 +604,9 @@ type CommerceTotalsResponse struct {
 	GrandTotal CommerceMoneyResponse `json:"grand_total"`
 	// PerUnitTotals Optional array value serialized in the `per_unit_totals` wire field.
 	PerUnitTotals []CommercePerUnitTotal `json:"per_unit_totals,omitempty"`
-	// Credits Optional API value serialized in the `credits` wire field.
+	// Credits Optional object value serialized in the `credits` wire field.
 	Credits *NullableValue[CommerceCreditsResponse] `json:"credits,omitempty"`
-	// Discounts Optional API value serialized in the `discounts` wire field.
+	// Discounts Optional object value serialized in the `discounts` wire field.
 	Discounts *NullableValue[CommerceDiscountsResponse] `json:"discounts,omitempty"`
 }
 

@@ -8,191 +8,6 @@ import (
 	"fmt"
 )
 
-// GetUsersCount returns a total count of all users that match the given filtering criteria.
-//
-// Parameters:
-//
-//	emailAddress: Counts users with the specified email addresses. Accepts up to
-//	100 email addresses. Any email addresses not found are ignored.
-//	phoneNumber: Counts users with the specified phone numbers. Accepts up to
-//	100 phone numbers. Any phone numbers not found are ignored.
-//	externalId: Counts users with the specified external IDs. Accepts up to 100
-//	external IDs. Any external IDs not found are ignored.
-//	username: Counts users with the specified usernames. Accepts up to 100
-//	usernames. Any usernames not found are ignored.
-//	web3Wallet: Counts users with the specified web3 wallet addresses. Accepts
-//	up to 100 web3 wallet addresses. Any web3 wallet addresses not found are
-//	ignored.
-//	userId: Counts users with the user IDs specified. Accepts up to 100 user
-//	IDs. Any user IDs not found are ignored.
-//	organizationId: Returns users that have memberships to the given
-//	organizations. For each organization ID, the `+` and `-` can be prepended to
-//	the ID, which denote whether the respective organization should be included
-//	or excluded from the result set. Accepts up to 100 organization IDs.
-//	query: Counts users that match the given query. For possible matches, we
-//	check the email addresses, phone numbers, usernames, web3 wallets, user IDs,
-//	first and last names. The query value doesn't need to match the exact value
-//	you are looking for, it is capable of partial matches as well.
-//	emailAddressQuery: Counts users with emails that match the given query, via
-//	case-insensitive partial match. For example, `email_address_query=ello` will
-//	match a user with the email `HELLO@example.com`, and will be included in the
-//	resulting count.
-//	phoneNumberQuery: Counts users with phone numbers that match the given
-//	query, via case-insensitive partial match. For example,
-//	`phone_number_query=555` will match a user with the phone number
-//	`+1555xxxxxxx`, and will be included in the resulting count.
-//	usernameQuery: Counts users with usernames that match the given query, via
-//	case-insensitive partial match. For example, `username_query=CoolUser` will
-//	match a user with the username `SomeCoolUser`, and will be included in the
-//	resulting count.
-//	nameQuery: Returns users with names that match the given query, via
-//	case-insensitive partial match.
-//	banned: Counts users which are either banned (`banned=true`) or not banned
-//	(`banned=false`).
-//	lastActiveAtBefore: Returns users whose last session activity was before the
-//	given date (with millisecond precision). Example: use 1700690400000 to
-//	retrieve users whose last session activity was before 2023-11-23.
-//	lastActiveAtAfter: Returns users whose last session activity was after the
-//	given date (with millisecond precision). Example: use 1700690400000 to
-//	retrieve users whose last session activity was after 2023-11-23.
-//	lastActiveAtSince: Returns users that had session activity since the given
-//	date. Example: use 1700690400000 to retrieve users that had session activity
-//	from 2023-11-23 until the current day. Deprecated in favor of
-//	`last_active_at_after`.
-//	createdAtBefore: Returns users who have been created before the given date
-//	(with millisecond precision). Example: use 1730160000000 to retrieve users
-//	who have been created before 2024-10-29.
-//	createdAtAfter: Returns users who have been created after the given date
-//	(with millisecond precision). Example: use 1730160000000 to retrieve users
-//	who have been created after 2024-10-29.
-//	lastSignInAtBefore: Counts users whose last sign-in was before the given
-//	date (with millisecond precision). Example: use 1700690400000 to count users
-//	whose last sign-in was before 2023-11-23.
-//	lastSignInAtAfter: Counts users whose last sign-in was after the given date
-//	(with millisecond precision). Example: use 1700690400000 to count users
-//	whose last sign-in was after 2023-11-23.
-//	provider: Counts users with external accounts for the specified OAuth
-//	provider. Must be used in combination with the `provider_user_id` parameter.
-//	For example, use `provider=oauth_google&provider_user_id=12345` to count
-//	users with Google provider user ID 12345. Accepts up to 100 providers.
-//	providerUserId: Counts users with the specified provider user IDs for a
-//	specific provider. Must be used in combination with the `provider`
-//	parameter. For example, use `provider=oauth_google&provider_user_id=12345`
-//	to count users with Google provider user ID 12345. Accepts up to 100
-//	provider user IDs. Any provider user IDs not found are ignored.
-func GetUsersCount(ctx context.Context, clientConfig ClientConfig, params GetUsersCountParams, opts ...RequestOption) (*TotalCount, error) {
-	emailAddress := params.EmailAddress
-	phoneNumber := params.PhoneNumber
-	externalId := params.ExternalId
-	username := params.Username
-	web3Wallet := params.Web3Wallet
-	userId := params.UserId
-	organizationId := params.OrganizationId
-	query := params.Query
-	emailAddressQuery := params.EmailAddressQuery
-	phoneNumberQuery := params.PhoneNumberQuery
-	usernameQuery := params.UsernameQuery
-	nameQuery := params.NameQuery
-	banned := params.Banned
-	lastActiveAtBefore := params.LastActiveAtBefore
-	lastActiveAtAfter := params.LastActiveAtAfter
-	lastActiveAtSince := params.LastActiveAtSince
-	createdAtBefore := params.CreatedAtBefore
-	createdAtAfter := params.CreatedAtAfter
-	lastSignInAtBefore := params.LastSignInAtBefore
-	lastSignInAtAfter := params.LastSignInAtAfter
-	provider := params.Provider
-	providerUserId := params.ProviderUserId
-
-	resp, err := DoCfg[TotalCount](ctx, &clientConfig, "GET", "/users/count", &RequestOpts{
-		Query: map[string]any{
-			"email_address":          QueryValue{Value: emailAddress, Style: "form", Explode: true},
-			"phone_number":           QueryValue{Value: phoneNumber, Style: "form", Explode: true},
-			"external_id":            QueryValue{Value: externalId, Style: "form", Explode: true},
-			"username":               QueryValue{Value: username, Style: "form", Explode: true},
-			"web3_wallet":            QueryValue{Value: web3Wallet, Style: "form", Explode: true},
-			"user_id":                QueryValue{Value: userId, Style: "form", Explode: true},
-			"organization_id":        QueryValue{Value: organizationId, Style: "form", Explode: true},
-			"query":                  QueryValue{Value: query, Style: "form", Explode: true},
-			"email_address_query":    QueryValue{Value: emailAddressQuery, Style: "form", Explode: true},
-			"phone_number_query":     QueryValue{Value: phoneNumberQuery, Style: "form", Explode: true},
-			"username_query":         QueryValue{Value: usernameQuery, Style: "form", Explode: true},
-			"name_query":             QueryValue{Value: nameQuery, Style: "form", Explode: true},
-			"banned":                 QueryValue{Value: banned, Style: "form", Explode: true},
-			"last_active_at_before":  QueryValue{Value: lastActiveAtBefore, Style: "form", Explode: true},
-			"last_active_at_after":   QueryValue{Value: lastActiveAtAfter, Style: "form", Explode: true},
-			"last_active_at_since":   QueryValue{Value: lastActiveAtSince, Style: "form", Explode: true},
-			"created_at_before":      QueryValue{Value: createdAtBefore, Style: "form", Explode: true},
-			"created_at_after":       QueryValue{Value: createdAtAfter, Style: "form", Explode: true},
-			"last_sign_in_at_before": QueryValue{Value: lastSignInAtBefore, Style: "form", Explode: true},
-			"last_sign_in_at_after":  QueryValue{Value: lastSignInAtAfter, Style: "form", Explode: true},
-			"provider":               QueryValue{Value: provider, Style: "form", Explode: true},
-			"provider_user_id":       QueryValue{Value: providerUserId, Style: "form", Explode: true},
-		},
-		OperationID: "GetUsersCount",
-		Errors:      ErrorDecoders{"422": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type GetUserParams struct {
-	UserId string
-}
-
-// GetUser retrieves the details of a user by their identifier. Use `user_id` to select the user whose account details you need.
-//
-// # Retrieve the details of a user
-//
-// Parameters:
-//
-//	userId: The ID of the user to retrieve
-func GetUser(ctx context.Context, clientConfig ClientConfig, params GetUserParams, opts ...RequestOption) (*User, error) {
-	userId := params.UserId
-
-	resp, err := DoCfg[User](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s", EncodePathSegment(userId)), &RequestOpts{
-		OperationID: "GetUser",
-		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type UpdateUserParams struct {
-	UserId                           string
-	ExternalId                       *NullableValue[string]
-	FirstName                        *NullableValue[string]
-	LastName                         *NullableValue[string]
-	Locale                           *NullableValue[string]
-	Timezone                         *NullableValue[string]
-	PrimaryEmailAddressId            *NullableValue[string]
-	NotifyPrimaryEmailAddressChanged *NullableValue[bool]
-	PrimaryPhoneNumberId             *NullableValue[string]
-	PrimaryWeb3WalletId              *NullableValue[string]
-	Username                         *NullableValue[string]
-	ProfileImageId                   *NullableValue[string]
-	Password                         *NullableValue[string]
-	PasswordDigest                   *string
-	PasswordHasher                   *string
-	SkipPasswordChecks               *NullableValue[bool]
-	SignOutOfOtherSessions           *NullableValue[bool]
-	TotpSecret                       *NullableValue[string]
-	BackupCodes                      *[]string
-	DeleteSelfEnabled                *NullableValue[bool]
-	CreateOrganizationEnabled        *NullableValue[bool]
-	LegalAcceptedAt                  *NullableValue[string]
-	SkipLegalChecks                  *NullableValue[bool]
-	CreateOrganizationsLimit         *NullableValue[int64]
-	CreatedAt                        *NullableValue[string]
-	BypassClientTrust                *NullableValue[bool]
-}
-
 // UpdateUser update a user's attributes. You can set the user's primary contact identifiers (email address and phone numbers) by updating the `primary_email_address_id` and `primary_phone_number_id` attributes respectively. Both IDs should correspond to verified identifications that belong to the user. You can remove a user's username by setting the username attribute to null or the blank string "". As of API version 2026-05-12, this endpoint no longer accepts `public_metadata`, `private_metadata`, or `unsafe_metadata`. Use `PATCH /v1/users/{user_id}/metadata` to merge updates into existing metadata, or `PUT /v1/users/{user_id}/metadata` to replace a metadata field entirely.
 //
 // Parameters:
@@ -713,4 +528,196 @@ type AdjustUserBillingCreditBalanceParams struct {
 	IdempotencyKey string
 	Currency       *string
 	Note           *string
+}
+
+// AdjustUserBillingCreditBalance increases or decreases the credit balance for the specified user. Each adjustment is recorded as a ledger entry. The idempotency_key parameter ensures that duplicate requests are safely handled.
+//
+// Parameters:
+//
+//	userId: The ID of the user whose credit balance to adjust
+//	amount: The credit amount in cents. Must be greater than zero.
+//	action: Whether to increase or decrease the credit balance.
+//	idempotencyKey: A unique key to ensure the adjustment is applied only once.
+//	Repeated requests with the same key return the original ledger entry.
+//	currency: The currency code (e.g. "USD"). Defaults to USD if not provided.
+//	note: An optional note to attach to the ledger entry.
+func AdjustUserBillingCreditBalance(ctx context.Context, clientConfig ClientConfig, params AdjustUserBillingCreditBalanceParams, opts ...RequestOption) (*CommerceCreditLedgerResponse, error) {
+	userId := params.UserId
+	amount := params.Amount
+	action := params.Action
+	idempotencyKey := params.IdempotencyKey
+	currency := params.Currency
+	note := params.Note
+
+	resp, err := DoCfg[CommerceCreditLedgerResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/users/%s/billing/credits", EncodePathSegment(userId)), &RequestOpts{
+		Body: map[string]any{
+			"amount":          amount,
+			"action":          action,
+			"idempotency_key": idempotencyKey,
+			"currency":        currency,
+			"note":            note,
+		},
+		OperationID: "AdjustUserBillingCreditBalance",
+		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "409": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors], "500": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type GetOAuthAccessTokenParams struct {
+	UserId    string
+	Provider  string
+	Paginated *bool
+	Limit     *int64
+	Offset    *int64
+}
+
+// GetOAuthAccessToken fetch the corresponding OAuth access token for a user that has previously authenticated with a particular OAuth provider. For OAuth 2.0, if the access token has expired and we have a corresponding refresh token, the access token will be refreshed transparently the new one will be returned.
+//
+// Parameters:
+//
+//	userId: The ID of the user for which to retrieve the OAuth access token
+//	provider: The ID of the OAuth provider (e.g. `oauth_google`)
+//	paginated: Whether to paginate the results. If true, the results will be
+//	paginated. If false, the results will not be paginated.
+//	limit: Applies a limit to the number of results returned. Can be used for
+//	paginating the results together with `offset`.
+//	offset: Skip the first `offset` results when paginating. Needs to be an
+//	integer greater or equal to zero. To be used in conjunction with `limit`.
+func GetOAuthAccessToken(ctx context.Context, clientConfig ClientConfig, params GetOAuthAccessTokenParams, opts ...RequestOption) ([]OAuthAccessToken_60fbbfc6, error) {
+	userId := params.UserId
+	provider := params.Provider
+	paginated := params.Paginated
+	limit := params.Limit
+	offset := params.Offset
+
+	if limit != nil {
+		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if offset != nil {
+		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[[]OAuthAccessToken_60fbbfc6](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/oauth_access_tokens/%s", EncodePathSegment(userId), EncodePathSegment(provider)), &RequestOpts{
+		Query: map[string]any{
+			"paginated": QueryValue{Value: paginated, Style: "form", Explode: true},
+			"limit":     QueryValue{Value: limit, Style: "form", Explode: true},
+			"offset":    QueryValue{Value: offset, Style: "form", Explode: true},
+		},
+		OperationID: "GetOAuthAccessToken",
+		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
+}
+
+type UsersGetOrganizationMembershipsParams struct {
+	UserId string
+	Limit  *int64
+	Offset *int64
+}
+
+// UsersGetOrganizationMemberships retrieve a paginated list of the user's organization memberships
+//
+// Parameters:
+//
+//	userId: The ID of the user whose organization memberships we want to
+//	retrieve
+//	limit: Applies a limit to the number of results returned. Can be used for
+//	paginating the results together with `offset`.
+//	offset: Skip the first `offset` results when paginating. Needs to be an
+//	integer greater or equal to zero. To be used in conjunction with `limit`.
+func UsersGetOrganizationMemberships(ctx context.Context, clientConfig ClientConfig, params UsersGetOrganizationMembershipsParams, opts ...RequestOption) (*OrganizationMemberships, error) {
+	userId := params.UserId
+	limit := params.Limit
+	offset := params.Offset
+
+	if limit != nil {
+		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if offset != nil {
+		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[OrganizationMemberships](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/organization_memberships", EncodePathSegment(userId)), &RequestOpts{
+		Query: map[string]any{
+			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
+			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
+		},
+		OperationID: "UsersGetOrganizationMemberships",
+		Errors:      ErrorDecoders{"403": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type UsersGetOrganizationInvitationsParams struct {
+	UserId string
+	Limit  *int64
+	Offset *int64
+	Status *string
+}
+
+// UsersGetOrganizationInvitations retrieve a paginated list of the user's organization invitations
+//
+// Parameters:
+//
+//	userId: The ID of the user whose organization invitations we want to
+//	retrieve
+//	limit: Applies a limit to the number of results returned. Can be used for
+//	paginating the results together with `offset`.
+//	offset: Skip the first `offset` results when paginating. Needs to be an
+//	integer greater or equal to zero. To be used in conjunction with `limit`.
+//	status: Filter organization invitations based on their status
+func UsersGetOrganizationInvitations(ctx context.Context, clientConfig ClientConfig, params UsersGetOrganizationInvitationsParams, opts ...RequestOption) (*OrganizationInvitationsWithPublicOrganizationData, error) {
+	userId := params.UserId
+	limit := params.Limit
+	offset := params.Offset
+	status := params.Status
+
+	if limit != nil {
+		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](500)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if offset != nil {
+		if err := ValidateRange("offset", *offset, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[OrganizationInvitationsWithPublicOrganizationData](ctx, &clientConfig, "GET", fmt.Sprintf("/users/%s/organization_invitations", EncodePathSegment(userId)), &RequestOpts{
+		Query: map[string]any{
+			"limit":  QueryValue{Value: limit, Style: "form", Explode: true},
+			"offset": QueryValue{Value: offset, Style: "form", Explode: true},
+			"status": QueryValue{Value: status, Style: "form", Explode: true},
+		},
+		OperationID: "UsersGetOrganizationInvitations",
+		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
 }

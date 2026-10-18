@@ -77,3 +77,38 @@ const (
 	WaitlistEntryStatusEnumRejected  WaitlistEntryStatusEnum = "rejected"
 	WaitlistEntryStatusEnumCompleted WaitlistEntryStatusEnum = "completed"
 )
+
+// WaitlistEntries Typed representation of the `WaitlistEntries` API schema.
+type WaitlistEntries struct {
+	// Data Required array value serialized in the `data` wire field.
+	Data []WaitlistEntry `json:"data"`
+	// TotalCount Total number of waitlist entries
+	TotalCount int64 `json:"total_count"`
+}
+
+func (value *WaitlistEntries) UnmarshalJSON(data []byte) error {
+	type WaitlistEntriesAlias WaitlistEntries
+	var decoded WaitlistEntriesAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = WaitlistEntries(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewWaitlistEntries returns a validated WaitlistEntries built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewWaitlistEntries(fields WaitlistEntries) (*WaitlistEntries, error) {
+	return ConstructModel(fields)
+}

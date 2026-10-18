@@ -27,7 +27,7 @@ func NewMachinesNamespace(config ClientConfig) *MachinesNamespace {
 //	example, to return machines in descending order by `created_at`, use
 //	`-created_at`. If you don't use `+` or `-`, then `+` is implied. Defaults to
 //	`-created_at`.
-func (sdk *MachinesNamespace) List(ctx context.Context, params ListMachinesParams, opts ...RequestOption) (*SchemaSchema_11ae8042, error) {
+func (sdk *MachinesNamespace) List(ctx context.Context, params ListMachinesParams, opts ...RequestOption) (*MachineList, error) {
 	return ListMachines(ctx, sdk.config, params, opts...)
 }
 
@@ -42,7 +42,7 @@ func (sdk *MachinesNamespace) List(ctx context.Context, params ListMachinesParam
 //	Maximum of 150 scopes per machine.
 //	defaultTokenTtl: The default time-to-live (TTL) in seconds for tokens
 //	created by this machine. Must be at least 1 second.
-func (sdk *MachinesNamespace) Create(ctx context.Context, params CreateMachineParams, opts ...RequestOption) (any, error) {
+func (sdk *MachinesNamespace) Create(ctx context.Context, params CreateMachineParams, opts ...RequestOption) (*MachineCreated, error) {
 	return CreateMachine(ctx, sdk.config, params, opts...)
 }
 
@@ -76,7 +76,7 @@ func (sdk *MachinesNamespace) Update(ctx context.Context, params UpdateMachinePa
 // Parameters:
 //
 //	machineId: The ID of the machine to delete
-func (sdk *MachinesNamespace) Delete(ctx context.Context, params DeleteMachineParams, opts ...RequestOption) (*SchemaSchema_7a4a2eaa, error) {
+func (sdk *MachinesNamespace) Delete(ctx context.Context, params DeleteMachineParams, opts ...RequestOption) (*MachineDeleted, error) {
 	return DeleteMachine(ctx, sdk.config, params, opts...)
 }
 
@@ -87,7 +87,7 @@ func (sdk *MachinesNamespace) Delete(ctx context.Context, params DeleteMachinePa
 // Parameters:
 //
 //	machineId: The ID of the machine to retrieve the secret key for
-func (sdk *MachinesNamespace) GetSecretKey(ctx context.Context, params GetMachineSecretKeyParams, opts ...RequestOption) (*SchemaSchema_23990ad7, error) {
+func (sdk *MachinesNamespace) GetSecretKey(ctx context.Context, params GetMachineSecretKeyParams, opts ...RequestOption) (*MachineSecretKey, error) {
 	return GetMachineSecretKey(ctx, sdk.config, params, opts...)
 }
 
@@ -100,7 +100,7 @@ func (sdk *MachinesNamespace) GetSecretKey(ctx context.Context, params GetMachin
 //	remain valid after rotation. This ensures a graceful transition period for
 //	updating applications with the new secret key. Set to 0 to immediately
 //	expire the previous key. Maximum value is 8 hours (28800 seconds).
-func (sdk *MachinesNamespace) RotateSecretKey(ctx context.Context, params RotateMachineSecretKeyParams, opts ...RequestOption) (*SchemaSchema_23990ad7, error) {
+func (sdk *MachinesNamespace) RotateSecretKey(ctx context.Context, params RotateMachineSecretKeyParams, opts ...RequestOption) (*MachineSecretKey, error) {
 	return RotateMachineSecretKey(ctx, sdk.config, params, opts...)
 }
 
@@ -121,7 +121,7 @@ func (sdk *MachinesNamespace) CreateScope(ctx context.Context, params CreateMach
 //
 //	machineId: The ID of the machine that has access to another machine
 //	otherMachineId: The ID of the machine that is being accessed
-func (sdk *MachinesNamespace) DeleteScope(ctx context.Context, params DeleteMachineScopeParams, opts ...RequestOption) (*SchemaSchema_5f07b6af, error) {
+func (sdk *MachinesNamespace) DeleteScope(ctx context.Context, params DeleteMachineScopeParams, opts ...RequestOption) (*MachineScopeDeleted, error) {
 	return DeleteMachineScope(ctx, sdk.config, params, opts...)
 }
 

@@ -5,170 +5,7 @@ package sdk
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-)
-
-type SchemaSchema_11ae8042 struct {
-	Data []Machine `json:"data"`
-	// TotalCount Total number of machines
-	TotalCount int64 `json:"total_count"`
-}
-
-func (value *SchemaSchema_11ae8042) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_11ae8042Alias SchemaSchema_11ae8042
-	var decoded SchemaSchema_11ae8042Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_11ae8042(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"data", "total_count"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_11ae8042 returns a validated SchemaSchema_11ae8042 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_11ae8042(fields SchemaSchema_11ae8042) (*SchemaSchema_11ae8042, error) {
-	return ConstructModel(fields)
-}
-
-type SchemaSchema_7a4a2eaa struct {
-	// Object String representing the object's type.
-	Object SchemaSchemaObjectEnum_384b96ba `json:"object"`
-	// Id The ID of the deleted machine
-	Id string `json:"id"`
-	// Deleted Whether the machine was successfully deleted
-	Deleted bool `json:"deleted"`
-}
-
-func (value *SchemaSchema_7a4a2eaa) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_7a4a2eaaAlias SchemaSchema_7a4a2eaa
-	var decoded SchemaSchema_7a4a2eaaAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_7a4a2eaa(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "id", "deleted"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_7a4a2eaa returns a validated SchemaSchema_7a4a2eaa built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_7a4a2eaa(fields SchemaSchema_7a4a2eaa) (*SchemaSchema_7a4a2eaa, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum_384b96ba String representing the object's type.
-type SchemaSchemaObjectEnum_384b96ba string
-
-const (
-	SchemaSchemaObjectEnum_384b96baMachine SchemaSchemaObjectEnum_384b96ba = "machine"
-)
-
-type SchemaSchema_23990ad7 struct {
-	// Object String representing the object's type.
-	Object SchemaSchemaObjectEnum_ab22cdb6 `json:"object"`
-	// Secret The secret key for the machine.
-	Secret string `json:"secret"`
-}
-
-func (value *SchemaSchema_23990ad7) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_23990ad7Alias SchemaSchema_23990ad7
-	var decoded SchemaSchema_23990ad7Alias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_23990ad7(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "secret"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "secret"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_23990ad7 returns a validated SchemaSchema_23990ad7 built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_23990ad7(fields SchemaSchema_23990ad7) (*SchemaSchema_23990ad7, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum_ab22cdb6 String representing the object's type.
-type SchemaSchemaObjectEnum_ab22cdb6 string
-
-const (
-	SchemaSchemaObjectEnum_ab22cdb6MachineSecretKey SchemaSchemaObjectEnum_ab22cdb6 = "machine_secret_key"
-)
-
-type SchemaSchema_5f07b6af struct {
-	// Object String representing the object's type.
-	Object SchemaSchemaObjectEnum_47b1d8ed `json:"object"`
-	// FromMachineId The ID of the machine that had access to the target machine
-	FromMachineId string `json:"from_machine_id"`
-	// ToMachineId The ID of the machine that was being accessed
-	ToMachineId string `json:"to_machine_id"`
-	// Deleted Whether the machine scope was successfully deleted
-	Deleted bool `json:"deleted"`
-}
-
-func (value *SchemaSchema_5f07b6af) UnmarshalJSON(data []byte) error {
-	type SchemaSchema_5f07b6afAlias SchemaSchema_5f07b6af
-	var decoded SchemaSchema_5f07b6afAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = SchemaSchema_5f07b6af(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "from_machine_id", "to_machine_id", "deleted"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "from_machine_id", "to_machine_id", "deleted"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewSchemaSchema_5f07b6af returns a validated SchemaSchema_5f07b6af built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewSchemaSchema_5f07b6af(fields SchemaSchema_5f07b6af) (*SchemaSchema_5f07b6af, error) {
-	return ConstructModel(fields)
-}
-
-// SchemaSchemaObjectEnum_47b1d8ed String representing the object's type.
-type SchemaSchemaObjectEnum_47b1d8ed string
-
-const (
-	SchemaSchemaObjectEnum_47b1d8edMachineScope SchemaSchemaObjectEnum_47b1d8ed = "machine_scope"
 )
 
 type ListMachinesParams struct {
@@ -194,7 +31,7 @@ type ListMachinesParams struct {
 //	example, to return machines in descending order by `created_at`, use
 //	`-created_at`. If you don't use `+` or `-`, then `+` is implied. Defaults to
 //	`-created_at`.
-func ListMachines(ctx context.Context, clientConfig ClientConfig, params ListMachinesParams, opts ...RequestOption) (*SchemaSchema_11ae8042, error) {
+func ListMachines(ctx context.Context, clientConfig ClientConfig, params ListMachinesParams, opts ...RequestOption) (*MachineList, error) {
 	limit := params.Limit
 	offset := params.Offset
 	query := params.Query
@@ -212,7 +49,7 @@ func ListMachines(ctx context.Context, clientConfig ClientConfig, params ListMac
 		}
 	}
 
-	resp, err := DoCfg[SchemaSchema_11ae8042](ctx, &clientConfig, "GET", "/machines", &RequestOpts{
+	resp, err := DoCfg[MachineList](ctx, &clientConfig, "GET", "/machines", &RequestOpts{
 		Query: map[string]any{
 			"limit":    QueryValue{Value: limit, Style: "form", Explode: true},
 			"offset":   QueryValue{Value: offset, Style: "form", Explode: true},
@@ -246,7 +83,7 @@ type CreateMachineParams struct {
 //	Maximum of 150 scopes per machine.
 //	defaultTokenTtl: The default time-to-live (TTL) in seconds for tokens
 //	created by this machine. Must be at least 1 second.
-func CreateMachine(ctx context.Context, clientConfig ClientConfig, params CreateMachineParams, opts ...RequestOption) (any, error) {
+func CreateMachine(ctx context.Context, clientConfig ClientConfig, params CreateMachineParams, opts ...RequestOption) (*MachineCreated, error) {
 	name := params.Name
 	scopedMachines := params.ScopedMachines
 	defaultTokenTtl := params.DefaultTokenTtl
@@ -267,7 +104,7 @@ func CreateMachine(ctx context.Context, clientConfig ClientConfig, params Create
 		}
 	}
 
-	resp, err := DoAnyCfg(ctx, &clientConfig, "POST", "/machines", &RequestOpts{
+	resp, err := DoCfg[MachineCreated](ctx, &clientConfig, "POST", "/machines", &RequestOpts{
 		Body: map[string]any{
 			"name":              name,
 			"scoped_machines":   scopedMachines,
@@ -280,7 +117,7 @@ func CreateMachine(ctx context.Context, clientConfig ClientConfig, params Create
 	if err != nil {
 		return nil, err
 	}
-	return resp.Data, nil
+	return &resp.Data, nil
 }
 
 type GetMachineParams struct {
@@ -365,10 +202,10 @@ type DeleteMachineParams struct {
 // Parameters:
 //
 //	machineId: The ID of the machine to delete
-func DeleteMachine(ctx context.Context, clientConfig ClientConfig, params DeleteMachineParams, opts ...RequestOption) (*SchemaSchema_7a4a2eaa, error) {
+func DeleteMachine(ctx context.Context, clientConfig ClientConfig, params DeleteMachineParams, opts ...RequestOption) (*MachineDeleted, error) {
 	machineId := params.MachineId
 
-	resp, err := DoCfg[SchemaSchema_7a4a2eaa](ctx, &clientConfig, "DELETE", fmt.Sprintf("/machines/%s", EncodePathSegment(machineId)), &RequestOpts{
+	resp, err := DoCfg[MachineDeleted](ctx, &clientConfig, "DELETE", fmt.Sprintf("/machines/%s", EncodePathSegment(machineId)), &RequestOpts{
 		OperationID: "DeleteMachine",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -390,10 +227,10 @@ type GetMachineSecretKeyParams struct {
 // Parameters:
 //
 //	machineId: The ID of the machine to retrieve the secret key for
-func GetMachineSecretKey(ctx context.Context, clientConfig ClientConfig, params GetMachineSecretKeyParams, opts ...RequestOption) (*SchemaSchema_23990ad7, error) {
+func GetMachineSecretKey(ctx context.Context, clientConfig ClientConfig, params GetMachineSecretKeyParams, opts ...RequestOption) (*MachineSecretKey, error) {
 	machineId := params.MachineId
 
-	resp, err := DoCfg[SchemaSchema_23990ad7](ctx, &clientConfig, "GET", fmt.Sprintf("/machines/%s/secret_key", EncodePathSegment(machineId)), &RequestOpts{
+	resp, err := DoCfg[MachineSecretKey](ctx, &clientConfig, "GET", fmt.Sprintf("/machines/%s/secret_key", EncodePathSegment(machineId)), &RequestOpts{
 		OperationID: "GetMachineSecretKey",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
 		Options:     opts,
@@ -418,7 +255,7 @@ type RotateMachineSecretKeyParams struct {
 //	remain valid after rotation. This ensures a graceful transition period for
 //	updating applications with the new secret key. Set to 0 to immediately
 //	expire the previous key. Maximum value is 8 hours (28800 seconds).
-func RotateMachineSecretKey(ctx context.Context, clientConfig ClientConfig, params RotateMachineSecretKeyParams, opts ...RequestOption) (*SchemaSchema_23990ad7, error) {
+func RotateMachineSecretKey(ctx context.Context, clientConfig ClientConfig, params RotateMachineSecretKeyParams, opts ...RequestOption) (*MachineSecretKey, error) {
 	machineId := params.MachineId
 	previousTokenTtl := params.PreviousTokenTtl
 
@@ -426,7 +263,7 @@ func RotateMachineSecretKey(ctx context.Context, clientConfig ClientConfig, para
 		return nil, err
 	}
 
-	resp, err := DoCfg[SchemaSchema_23990ad7](ctx, &clientConfig, "POST", fmt.Sprintf("/machines/%s/secret_key/rotate", EncodePathSegment(machineId)), &RequestOpts{
+	resp, err := DoCfg[MachineSecretKey](ctx, &clientConfig, "POST", fmt.Sprintf("/machines/%s/secret_key/rotate", EncodePathSegment(machineId)), &RequestOpts{
 		Body: map[string]any{
 			"previous_token_ttl": previousTokenTtl,
 		},
@@ -481,11 +318,11 @@ type DeleteMachineScopeParams struct {
 //
 //	machineId: The ID of the machine that has access to another machine
 //	otherMachineId: The ID of the machine that is being accessed
-func DeleteMachineScope(ctx context.Context, clientConfig ClientConfig, params DeleteMachineScopeParams, opts ...RequestOption) (*SchemaSchema_5f07b6af, error) {
+func DeleteMachineScope(ctx context.Context, clientConfig ClientConfig, params DeleteMachineScopeParams, opts ...RequestOption) (*MachineScopeDeleted, error) {
 	machineId := params.MachineId
 	otherMachineId := params.OtherMachineId
 
-	resp, err := DoCfg[SchemaSchema_5f07b6af](ctx, &clientConfig, "DELETE", fmt.Sprintf("/machines/%s/scopes/%s", EncodePathSegment(machineId), EncodePathSegment(otherMachineId)), &RequestOpts{
+	resp, err := DoCfg[MachineScopeDeleted](ctx, &clientConfig, "DELETE", fmt.Sprintf("/machines/%s/scopes/%s", EncodePathSegment(machineId), EncodePathSegment(otherMachineId)), &RequestOpts{
 		OperationID: "DeleteMachineScope",
 		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "403": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
 		Options:     opts,
