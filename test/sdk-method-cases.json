@@ -641,7 +641,7 @@
       "arguments": {
         "EmailAddressId": "email_address-1",
         "VerificationId": "verification-1",
-        "Code": "code"
+        "Code": "user@example.com"
       },
       "wireNames": {
         "EmailAddressId": "email_address_id",
@@ -679,7 +679,7 @@
       "arguments": {
         "EmailAddressId": "email_address-1",
         "VerificationId": "verification-1",
-        "Code": "code"
+        "Code": "user@example.com"
       },
       "wireNames": {
         "EmailAddressId": "email_address_id",
@@ -2328,7 +2328,7 @@
       "arguments": {
         "OnBehalfOf": {
           "user_id": "user-1",
-          "identifier": "identifier"
+          "identifier": "user@example.com"
         },
         "Permissions": "*",
         "AgentName": "Example Name",
@@ -2376,7 +2376,7 @@
       "arguments": {
         "OnBehalfOf": {
           "user_id": "user-1",
-          "identifier": "identifier"
+          "identifier": "user@example.com"
         },
         "Permissions": "*",
         "AgentName": "Example Name",
@@ -2428,7 +2428,7 @@
       "mode": "normal",
       "owner": null,
       "arguments": {
-        "Identifier": "identifier",
+        "Identifier": "user@example.com",
         "Notify": false
       },
       "wireNames": {
@@ -2445,7 +2445,7 @@
           "object": "allowlist_identifier",
           "id": "id-1",
           "invitation_id": "invitation-1",
-          "identifier": "identifier",
+          "identifier": "user@example.com",
           "identifier_type": "email_address",
           "instance_id": "instance-1",
           "created_at": 1,
@@ -2464,7 +2464,7 @@
       "mode": "normal",
       "owner": null,
       "arguments": {
-        "Identifier": "identifier",
+        "Identifier": "user@example.com",
         "Notify": false
       },
       "wireNames": {
@@ -3260,7 +3260,7 @@
       "mode": "normal",
       "owner": null,
       "arguments": {
-        "Identifier": "identifier"
+        "Identifier": "user@example.com"
       },
       "wireNames": {
         "Identifier": "identifier"
@@ -3273,7 +3273,7 @@
         "expected": {
           "object": "blocklist_identifier",
           "id": "id-1",
-          "identifier": "identifier",
+          "identifier": "user@example.com",
           "identifier_type": "email_address",
           "instance_id": "instance-1",
           "created_at": 1,
@@ -3292,7 +3292,7 @@
       "mode": "normal",
       "owner": null,
       "arguments": {
-        "Identifier": "identifier"
+        "Identifier": "user@example.com"
       },
       "wireNames": {
         "Identifier": "identifier"
@@ -17109,7 +17109,7 @@
             "object": "allowlist_identifier",
             "id": "id-1",
             "invitation_id": "invitation-1",
-            "identifier": "identifier",
+            "identifier": "user@example.com",
             "identifier_type": "email_address",
             "instance_id": "instance-1",
             "created_at": 1,
@@ -17246,7 +17246,7 @@
             {
               "object": "blocklist_identifier",
               "id": "id-1",
-              "identifier": "identifier",
+              "identifier": "user@example.com",
               "identifier_type": "email_address",
               "instance_id": "instance-1",
               "created_at": 1,
