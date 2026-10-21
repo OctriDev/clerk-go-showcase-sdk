@@ -561,8 +561,8 @@ func (sdk *UsersNamespace) DeleteBackupCode(ctx context.Context, params DeleteBa
 //
 //	userId: The ID of the user that owns the passkey identity
 //	passkeyIdentificationId: The ID of the passkey identity to be deleted
-func (sdk *UsersNamespace) DeletePasskey(ctx context.Context, params DeleteUsersPasskeyParams, opts ...RequestOption) (*DeletedObject, error) {
-	return DeleteUsersPasskey(ctx, sdk.config, params, opts...)
+func (sdk *UsersNamespace) DeletePasskey(ctx context.Context, params DeleteUserPasskeyParams, opts ...RequestOption) (*DeletedObject, error) {
+	return DeleteUserPasskey(ctx, sdk.config, params, opts...)
 }
 
 // ListTrustedDevices returns the active trusted devices enrolled by the user.

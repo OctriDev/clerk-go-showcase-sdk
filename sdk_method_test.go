@@ -204,10 +204,10 @@ func sdkMethodByName(name string) any {
 		return DeleteTOTP
 	case "DeleteUser":
 		return DeleteUser
+	case "DeleteUserPasskey":
+		return DeleteUserPasskey
 	case "DeleteUserProfileImage":
 		return DeleteUserProfileImage
-	case "DeleteUsersPasskey":
-		return DeleteUsersPasskey
 	case "DeleteUsersWeb3Wallet":
 		return DeleteUsersWeb3Wallet
 	case "DeleteWaitlistEntry":

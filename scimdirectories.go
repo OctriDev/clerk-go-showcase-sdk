@@ -9,88 +9,6 @@ import (
 	"fmt"
 )
 
-type CreateSCIMDirectoryGroupRoleMappings struct {
-	// ScimGroupId The SCIM group ID from the identity provider.
-	ScimGroupId string `json:"scim_group_id"`
-	// ScimGroupDisplayName Optional display name for the SCIM group.
-	ScimGroupDisplayName *string `json:"scim_group_display_name,omitempty"`
-	// RoleId The organization role ID to assign to members of the SCIM group.
-	RoleId string `json:"role_id"`
-	// Precedence The precedence for this mapping. If omitted, precedence is assigned by array order.
-	Precedence *int64 `json:"precedence,omitempty"`
-}
-
-func (value *CreateSCIMDirectoryGroupRoleMappings) UnmarshalJSON(data []byte) error {
-	type CreateSCIMDirectoryGroupRoleMappingsAlias CreateSCIMDirectoryGroupRoleMappings
-	var decoded CreateSCIMDirectoryGroupRoleMappingsAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateSCIMDirectoryGroupRoleMappings(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
-		return err
-	}
-	if value.ScimGroupDisplayName != nil {
-		if err := ValidateLength("scim_group_display_name", *value.ScimGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
-			return err
-		}
-	}
-	if value.Precedence != nil {
-		if err := ValidateRange("precedence", *value.Precedence, RangeOpts{Min: Ptr[float64](1)}); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// NewCreateSCIMDirectoryGroupRoleMappings returns a validated CreateSCIMDirectoryGroupRoleMappings built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateSCIMDirectoryGroupRoleMappings(fields CreateSCIMDirectoryGroupRoleMappings) (*CreateSCIMDirectoryGroupRoleMappings, error) {
-	return ConstructModel(fields)
-}
-
-type ReplaceSCIMGroupRoleMappingsMappings struct {
-	// ScimGroupId The SCIM group ID from the identity provider.
-	ScimGroupId string `json:"scim_group_id"`
-	// RoleId The ID of the organization role to assign to members of the SCIM group.
-	RoleId string `json:"role_id"`
-}
-
-func (value *ReplaceSCIMGroupRoleMappingsMappings) UnmarshalJSON(data []byte) error {
-	type ReplaceSCIMGroupRoleMappingsMappingsAlias ReplaceSCIMGroupRoleMappingsMappings
-	var decoded ReplaceSCIMGroupRoleMappingsMappingsAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = ReplaceSCIMGroupRoleMappingsMappings(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewReplaceSCIMGroupRoleMappingsMappings returns a validated ReplaceSCIMGroupRoleMappingsMappings built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewReplaceSCIMGroupRoleMappingsMappings(fields ReplaceSCIMGroupRoleMappingsMappings) (*ReplaceSCIMGroupRoleMappingsMappings, error) {
-	return ConstructModel(fields)
-}
-
 type ListSCIMDirectoriesParams struct {
 	Limit  *int64
 	Offset *int64
@@ -421,4 +339,86 @@ func DeleteSCIMGroupRoleMapping(ctx context.Context, clientConfig ClientConfig, 
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+type CreateSCIMDirectoryGroupRoleMappings struct {
+	// ScimGroupId The SCIM group ID from the identity provider.
+	ScimGroupId string `json:"scim_group_id"`
+	// ScimGroupDisplayName Optional display name for the SCIM group.
+	ScimGroupDisplayName *string `json:"scim_group_display_name,omitempty"`
+	// RoleId The organization role ID to assign to members of the SCIM group.
+	RoleId string `json:"role_id"`
+	// Precedence The precedence for this mapping. If omitted, precedence is assigned by array order.
+	Precedence *int64 `json:"precedence,omitempty"`
+}
+
+func (value *CreateSCIMDirectoryGroupRoleMappings) UnmarshalJSON(data []byte) error {
+	type CreateSCIMDirectoryGroupRoleMappingsAlias CreateSCIMDirectoryGroupRoleMappings
+	var decoded CreateSCIMDirectoryGroupRoleMappingsAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateSCIMDirectoryGroupRoleMappings(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
+		return err
+	}
+	if value.ScimGroupDisplayName != nil {
+		if err := ValidateLength("scim_group_display_name", *value.ScimGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
+			return err
+		}
+	}
+	if value.Precedence != nil {
+		if err := ValidateRange("precedence", *value.Precedence, RangeOpts{Min: Ptr[float64](1)}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// NewCreateSCIMDirectoryGroupRoleMappings returns a validated CreateSCIMDirectoryGroupRoleMappings built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateSCIMDirectoryGroupRoleMappings(fields CreateSCIMDirectoryGroupRoleMappings) (*CreateSCIMDirectoryGroupRoleMappings, error) {
+	return ConstructModel(fields)
+}
+
+type ReplaceSCIMGroupRoleMappingsMappings struct {
+	// ScimGroupId The SCIM group ID from the identity provider.
+	ScimGroupId string `json:"scim_group_id"`
+	// RoleId The ID of the organization role to assign to members of the SCIM group.
+	RoleId string `json:"role_id"`
+}
+
+func (value *ReplaceSCIMGroupRoleMappingsMappings) UnmarshalJSON(data []byte) error {
+	type ReplaceSCIMGroupRoleMappingsMappingsAlias ReplaceSCIMGroupRoleMappingsMappings
+	var decoded ReplaceSCIMGroupRoleMappingsMappingsAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = ReplaceSCIMGroupRoleMappingsMappings(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"scim_group_id", "role_id"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewReplaceSCIMGroupRoleMappingsMappings returns a validated ReplaceSCIMGroupRoleMappingsMappings built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewReplaceSCIMGroupRoleMappingsMappings(fields ReplaceSCIMGroupRoleMappingsMappings) (*ReplaceSCIMGroupRoleMappingsMappings, error) {
+	return ConstructModel(fields)
 }

@@ -8,22 +8,6 @@ import (
 	"fmt"
 )
 
-// CreateAgentTaskOnBehalfOf Identifies the user on whose behalf the agent task is created.
-// Exactly one of user_id or identifier must be provided.
-type CreateAgentTaskOnBehalfOf struct {
-	// UserId The ID of the user.
-	UserId *string `json:"user_id,omitempty"`
-	// Identifier A verified identifier (e.g. email address) belonging to the user.
-	Identifier *string `json:"identifier,omitempty"`
-}
-
-// NewCreateAgentTaskOnBehalfOf returns a validated CreateAgentTaskOnBehalfOf built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateAgentTaskOnBehalfOf(fields CreateAgentTaskOnBehalfOf) (*CreateAgentTaskOnBehalfOf, error) {
-	return ConstructModel(fields)
-}
-
 type CreateAgentTaskParams struct {
 	OnBehalfOf                  CreateAgentTaskOnBehalfOf
 	Permissions                 string
@@ -108,4 +92,20 @@ func RevokeAgentTask(ctx context.Context, clientConfig ClientConfig, params Revo
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+// CreateAgentTaskOnBehalfOf Identifies the user on whose behalf the agent task is created.
+// Exactly one of user_id or identifier must be provided.
+type CreateAgentTaskOnBehalfOf struct {
+	// UserId The ID of the user.
+	UserId *string `json:"user_id,omitempty"`
+	// Identifier A verified identifier (e.g. email address) belonging to the user.
+	Identifier *string `json:"identifier,omitempty"`
+}
+
+// NewCreateAgentTaskOnBehalfOf returns a validated CreateAgentTaskOnBehalfOf built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateAgentTaskOnBehalfOf(fields CreateAgentTaskOnBehalfOf) (*CreateAgentTaskOnBehalfOf, error) {
+	return ConstructModel(fields)
 }

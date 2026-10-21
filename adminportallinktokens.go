@@ -9,6 +9,81 @@ import (
 	"fmt"
 )
 
+type CreateAdminPortalLinkTokenParams struct {
+	OrganizationId         *string
+	ItContactId            *string
+	Scopes                 *[]string
+	SecondsUntilExpiration *int64
+}
+
+// CreateAdminPortalLinkToken creates a single-use admin portal link token, optionally scoped to an organization and IT contact. Supply `organization_id`, `it_contact_id`, `scopes`, and `seconds_until_expiration` as needed; the expiration defaults to 3600 seconds. Treat the returned token as a secret because it is URL-borne.
+func CreateAdminPortalLinkToken(ctx context.Context, clientConfig ClientConfig, params CreateAdminPortalLinkTokenParams, opts ...RequestOption) (*CreateAdminPortalLinkTokenResponse, error) {
+	organizationId := params.OrganizationId
+	itContactId := params.ItContactId
+	scopes := params.Scopes
+	secondsUntilExpiration := params.SecondsUntilExpiration
+
+	if organizationId != nil {
+		if err := ValidatePattern("organization_id", *organizationId, "^org_\\w{27}$"); err != nil {
+			return nil, err
+		}
+	}
+
+	if itContactId != nil {
+		if err := ValidateLength("it_contact_id", *itContactId, LengthOpts{Min: Ptr[int](1)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if secondsUntilExpiration != nil {
+		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration, RangeOpts{Max: Ptr[float64](86400), ExclusiveMin: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[CreateAdminPortalLinkTokenResponse](ctx, &clientConfig, "POST", "/admin_portal_link_tokens", &RequestOpts{
+		Body: map[string]any{
+			"organization_id":          organizationId,
+			"it_contact_id":            itContactId,
+			"scopes":                   scopes,
+			"seconds_until_expiration": secondsUntilExpiration,
+		},
+		OperationID: "CreateAdminPortalLinkToken",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type RevokeAdminPortalLinkTokenParams struct {
+	AdminPortalLinkTokenID string
+	RevocationReason       *NullableValue[string]
+}
+
+// RevokeAdminPortalLinkToken revokes an admin portal link token identified by its token ID. You can include `revocation_reason` to record why the token was revoked. The response contains the token's updated revocation state.
+func RevokeAdminPortalLinkToken(ctx context.Context, clientConfig ClientConfig, params RevokeAdminPortalLinkTokenParams, opts ...RequestOption) (*RevokeAdminPortalLinkTokenResponse, error) {
+	adminPortalLinkTokenID := params.AdminPortalLinkTokenID
+	revocationReason := params.RevocationReason
+
+	if err := ValidatePattern("adminPortalLinkTokenID", adminPortalLinkTokenID, "^aplt_[0-9A-Fa-f]{32}$"); err != nil {
+		return nil, err
+	}
+
+	resp, err := DoCfg[RevokeAdminPortalLinkTokenResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/admin_portal_link_tokens/%s/revoke", EncodePathSegment(adminPortalLinkTokenID)), &RequestOpts{
+		Body: map[string]any{
+			"revocation_reason": revocationReason,
+		},
+		OperationID: "RevokeAdminPortalLinkToken",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
 type CreateAdminPortalLinkTokenResponse struct {
 	Object CreateAdminPortalLinkTokenResponseObjectEnum `json:"object"`
 	Id     string                                       `json:"id"`
@@ -140,78 +215,3 @@ type RevokeAdminPortalLinkTokenResponseObjectEnum string
 const (
 	RevokeAdminPortalLinkTokenResponseObjectEnumAdminPortalLinkToken RevokeAdminPortalLinkTokenResponseObjectEnum = "admin_portal_link_token"
 )
-
-type CreateAdminPortalLinkTokenParams struct {
-	OrganizationId         *string
-	ItContactId            *string
-	Scopes                 *[]string
-	SecondsUntilExpiration *int64
-}
-
-// CreateAdminPortalLinkToken creates a single-use admin portal link token, optionally scoped to an organization and IT contact. Supply `organization_id`, `it_contact_id`, `scopes`, and `seconds_until_expiration` as needed; the expiration defaults to 3600 seconds. Treat the returned token as a secret because it is URL-borne.
-func CreateAdminPortalLinkToken(ctx context.Context, clientConfig ClientConfig, params CreateAdminPortalLinkTokenParams, opts ...RequestOption) (*CreateAdminPortalLinkTokenResponse, error) {
-	organizationId := params.OrganizationId
-	itContactId := params.ItContactId
-	scopes := params.Scopes
-	secondsUntilExpiration := params.SecondsUntilExpiration
-
-	if organizationId != nil {
-		if err := ValidatePattern("organization_id", *organizationId, "^org_\\w{27}$"); err != nil {
-			return nil, err
-		}
-	}
-
-	if itContactId != nil {
-		if err := ValidateLength("it_contact_id", *itContactId, LengthOpts{Min: Ptr[int](1)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if secondsUntilExpiration != nil {
-		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration, RangeOpts{Max: Ptr[float64](86400), ExclusiveMin: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[CreateAdminPortalLinkTokenResponse](ctx, &clientConfig, "POST", "/admin_portal_link_tokens", &RequestOpts{
-		Body: map[string]any{
-			"organization_id":          organizationId,
-			"it_contact_id":            itContactId,
-			"scopes":                   scopes,
-			"seconds_until_expiration": secondsUntilExpiration,
-		},
-		OperationID: "CreateAdminPortalLinkToken",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type RevokeAdminPortalLinkTokenParams struct {
-	AdminPortalLinkTokenID string
-	RevocationReason       *NullableValue[string]
-}
-
-// RevokeAdminPortalLinkToken revokes an admin portal link token identified by its token ID. You can include `revocation_reason` to record why the token was revoked. The response contains the token's updated revocation state.
-func RevokeAdminPortalLinkToken(ctx context.Context, clientConfig ClientConfig, params RevokeAdminPortalLinkTokenParams, opts ...RequestOption) (*RevokeAdminPortalLinkTokenResponse, error) {
-	adminPortalLinkTokenID := params.AdminPortalLinkTokenID
-	revocationReason := params.RevocationReason
-
-	if err := ValidatePattern("adminPortalLinkTokenID", adminPortalLinkTokenID, "^aplt_[0-9A-Fa-f]{32}$"); err != nil {
-		return nil, err
-	}
-
-	resp, err := DoCfg[RevokeAdminPortalLinkTokenResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/admin_portal_link_tokens/%s/revoke", EncodePathSegment(adminPortalLinkTokenID)), &RequestOpts{
-		Body: map[string]any{
-			"revocation_reason": revocationReason,
-		},
-		OperationID: "RevokeAdminPortalLinkToken",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}

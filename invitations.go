@@ -10,77 +10,6 @@ import (
 	"fmt"
 )
 
-type CreateBulkInvitationsModel struct {
-	// EmailAddress The email address the invitation will be sent to
-	EmailAddress string `json:"email_address"`
-	// PublicMetadata Metadata that will be attached to the newly created invitation.
-	// The value of this property should be a well-formed JSON object.
-	// Once the user accepts the invitation and signs up, these metadata will end up in the user's public metadata.
-	PublicMetadata *NullableValue[map[string]any] `json:"public_metadata,omitempty"`
-	// RedirectUrl The URL where the user is redirected upon visiting the invitation link, where they can accept the invitation. Required if you have implemented a custom flow for handling application invitations.
-	RedirectUrl *NullableValue[string] `json:"redirect_url,omitempty"`
-	// Notify Optional flag which denotes whether an email invitation should be sent to the given email address.
-	// Defaults to true.
-	Notify *NullableValue[bool] `json:"notify,omitempty"`
-	// IgnoreExisting Whether an invitation should be created if there is already an existing invitation for this email
-	// address, or it's claimed by another user.
-	IgnoreExisting *NullableValue[bool] `json:"ignore_existing,omitempty"`
-	// ExpiresInDays The number of days the invitation will be valid for. By default, the invitation expires after 30 days.
-	ExpiresInDays *NullableValue[int64] `json:"expires_in_days,omitempty"`
-	// TemplateSlug The slug of the email template to use for the invitation email.
-	TemplateSlug *CreateBulkInvitationsTemplateSlugEnum `json:"template_slug,omitempty"`
-}
-
-func (value *CreateBulkInvitationsModel) UnmarshalJSON(data []byte) error {
-	type CreateBulkInvitationsModelAlias CreateBulkInvitationsModel
-	var decoded CreateBulkInvitationsModelAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateBulkInvitationsModel(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"email_address"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"email_address"}); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["public_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.PublicMetadata = &NullableValue[map[string]any]{}
-	}
-	if raw, ok := rawFields["redirect_url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.RedirectUrl = &NullableValue[string]{}
-	}
-	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Notify = &NullableValue[bool]{}
-	}
-	if raw, ok := rawFields["ignore_existing"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.IgnoreExisting = &NullableValue[bool]{}
-	}
-	if raw, ok := rawFields["expires_in_days"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.ExpiresInDays = &NullableValue[int64]{}
-	}
-	return nil
-}
-
-// NewCreateBulkInvitationsModel returns a validated CreateBulkInvitationsModel built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateBulkInvitationsModel(fields CreateBulkInvitationsModel) (*CreateBulkInvitationsModel, error) {
-	return ConstructModel(fields)
-}
-
-// CreateBulkInvitationsTemplateSlugEnum The slug of the email template to use for the invitation email.
-type CreateBulkInvitationsTemplateSlugEnum string
-
-const (
-	CreateBulkInvitationsTemplateSlugEnumInvitation         CreateBulkInvitationsTemplateSlugEnum = "invitation"
-	CreateBulkInvitationsTemplateSlugEnumWaitlistInvitation CreateBulkInvitationsTemplateSlugEnum = "waitlist_invitation"
-)
-
 type CreateInvitationParams struct {
 	EmailAddress   string
 	PublicMetadata *map[string]any
@@ -288,3 +217,74 @@ func RevokeInvitation(ctx context.Context, clientConfig ClientConfig, params Rev
 	}
 	return &resp.Data, nil
 }
+
+type CreateBulkInvitationsModel struct {
+	// EmailAddress The email address the invitation will be sent to
+	EmailAddress string `json:"email_address"`
+	// PublicMetadata Metadata that will be attached to the newly created invitation.
+	// The value of this property should be a well-formed JSON object.
+	// Once the user accepts the invitation and signs up, these metadata will end up in the user's public metadata.
+	PublicMetadata *NullableValue[map[string]any] `json:"public_metadata,omitempty"`
+	// RedirectUrl The URL where the user is redirected upon visiting the invitation link, where they can accept the invitation. Required if you have implemented a custom flow for handling application invitations.
+	RedirectUrl *NullableValue[string] `json:"redirect_url,omitempty"`
+	// Notify Optional flag which denotes whether an email invitation should be sent to the given email address.
+	// Defaults to true.
+	Notify *NullableValue[bool] `json:"notify,omitempty"`
+	// IgnoreExisting Whether an invitation should be created if there is already an existing invitation for this email
+	// address, or it's claimed by another user.
+	IgnoreExisting *NullableValue[bool] `json:"ignore_existing,omitempty"`
+	// ExpiresInDays The number of days the invitation will be valid for. By default, the invitation expires after 30 days.
+	ExpiresInDays *NullableValue[int64] `json:"expires_in_days,omitempty"`
+	// TemplateSlug The slug of the email template to use for the invitation email.
+	TemplateSlug *CreateBulkInvitationsTemplateSlugEnum `json:"template_slug,omitempty"`
+}
+
+func (value *CreateBulkInvitationsModel) UnmarshalJSON(data []byte) error {
+	type CreateBulkInvitationsModelAlias CreateBulkInvitationsModel
+	var decoded CreateBulkInvitationsModelAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateBulkInvitationsModel(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"email_address"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"email_address"}); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["public_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.PublicMetadata = &NullableValue[map[string]any]{}
+	}
+	if raw, ok := rawFields["redirect_url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.RedirectUrl = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Notify = &NullableValue[bool]{}
+	}
+	if raw, ok := rawFields["ignore_existing"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.IgnoreExisting = &NullableValue[bool]{}
+	}
+	if raw, ok := rawFields["expires_in_days"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.ExpiresInDays = &NullableValue[int64]{}
+	}
+	return nil
+}
+
+// NewCreateBulkInvitationsModel returns a validated CreateBulkInvitationsModel built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateBulkInvitationsModel(fields CreateBulkInvitationsModel) (*CreateBulkInvitationsModel, error) {
+	return ConstructModel(fields)
+}
+
+// CreateBulkInvitationsTemplateSlugEnum The slug of the email template to use for the invitation email.
+type CreateBulkInvitationsTemplateSlugEnum string
+
+const (
+	CreateBulkInvitationsTemplateSlugEnumInvitation         CreateBulkInvitationsTemplateSlugEnum = "invitation"
+	CreateBulkInvitationsTemplateSlugEnumWaitlistInvitation CreateBulkInvitationsTemplateSlugEnum = "waitlist_invitation"
+)

@@ -9,65 +9,6 @@ import (
 	"fmt"
 )
 
-// CreateActorTokenActor The actor payload. It needs to include a sub property which should contain the ID of the actor.
-// This whole payload will be also included in the JWT session token.
-type CreateActorTokenActor struct {
-	// Sub The ID of the actor.
-	Sub                  string         `json:"sub"`
-	AdditionalProperties map[string]any `json:"-"`
-}
-
-func (value *CreateActorTokenActor) UnmarshalJSON(data []byte) error {
-	type CreateActorTokenActorAlias CreateActorTokenActor
-	var decoded CreateActorTokenActorAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateActorTokenActor(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := json.Unmarshal(data, &value.AdditionalProperties); err != nil {
-		return err
-	}
-	for _, key := range []string{"sub"} {
-		delete(value.AdditionalProperties, key)
-	}
-	if err := ValidateRequired(rawFields, []string{"sub"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"sub"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (value CreateActorTokenActor) MarshalJSON() ([]byte, error) {
-	type CreateActorTokenActorAlias CreateActorTokenActor
-	encoded, err := json.Marshal(CreateActorTokenActorAlias(value))
-	if err != nil {
-		return nil, err
-	}
-	var fields map[string]json.RawMessage
-	if err := json.Unmarshal(encoded, &fields); err != nil {
-		return nil, err
-	}
-	for key, item := range value.AdditionalProperties {
-		if fields[key], err = json.Marshal(item); err != nil {
-			return nil, err
-		}
-	}
-	return json.Marshal(fields)
-}
-
-// NewCreateActorTokenActor returns a validated CreateActorTokenActor built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateActorTokenActor(fields CreateActorTokenActor) (*CreateActorTokenActor, error) {
-	return ConstructModel(fields)
-}
-
 type CreateActorTokenParams struct {
 	UserId                      string
 	Actor                       CreateActorTokenActor
@@ -134,4 +75,63 @@ func RevokeActorToken(ctx context.Context, clientConfig ClientConfig, params Rev
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+// CreateActorTokenActor The actor payload. It needs to include a sub property which should contain the ID of the actor.
+// This whole payload will be also included in the JWT session token.
+type CreateActorTokenActor struct {
+	// Sub The ID of the actor.
+	Sub                  string         `json:"sub"`
+	AdditionalProperties map[string]any `json:"-"`
+}
+
+func (value *CreateActorTokenActor) UnmarshalJSON(data []byte) error {
+	type CreateActorTokenActorAlias CreateActorTokenActor
+	var decoded CreateActorTokenActorAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateActorTokenActor(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(data, &value.AdditionalProperties); err != nil {
+		return err
+	}
+	for _, key := range []string{"sub"} {
+		delete(value.AdditionalProperties, key)
+	}
+	if err := ValidateRequired(rawFields, []string{"sub"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"sub"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (value CreateActorTokenActor) MarshalJSON() ([]byte, error) {
+	type CreateActorTokenActorAlias CreateActorTokenActor
+	encoded, err := json.Marshal(CreateActorTokenActorAlias(value))
+	if err != nil {
+		return nil, err
+	}
+	var fields map[string]json.RawMessage
+	if err := json.Unmarshal(encoded, &fields); err != nil {
+		return nil, err
+	}
+	for key, item := range value.AdditionalProperties {
+		if fields[key], err = json.Marshal(item); err != nil {
+			return nil, err
+		}
+	}
+	return json.Marshal(fields)
+}
+
+// NewCreateActorTokenActor returns a validated CreateActorTokenActor built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateActorTokenActor(fields CreateActorTokenActor) (*CreateActorTokenActor, error) {
+	return ConstructModel(fields)
 }
