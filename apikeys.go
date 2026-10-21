@@ -10,6 +10,242 @@ import (
 	"fmt"
 )
 
+type CreateApiKeyParams struct {
+	Name                   string
+	Subject                string
+	Type_                  *string
+	Description            *NullableValue[string]
+	Claims                 *any
+	Scopes                 *[]string
+	CreatedBy              *NullableValue[string]
+	SecondsUntilExpiration *NullableValue[float64]
+}
+
+// CreateApiKey creates an API key for the specified subject. Supply `name` and `subject`, and provide optional claims, scopes, creator, and expiration settings as needed. The response includes the key secret, so handle it as a credential.
+func CreateApiKey(ctx context.Context, clientConfig ClientConfig, params CreateApiKeyParams, opts ...RequestOption) (*CreateApiKeyResponse, error) {
+	name := params.Name
+	subject := params.Subject
+	type_ := params.Type_
+	description := params.Description
+	claims := params.Claims
+	scopes := params.Scopes
+	createdBy := params.CreatedBy
+	secondsUntilExpiration := params.SecondsUntilExpiration
+
+	if err := ValidateLength("name", name, LengthOpts{Min: Ptr[int](3)}); err != nil {
+		return nil, err
+	}
+	if err := ValidatePattern("name", name, "^(\\S(.*\\S)?)?$"); err != nil {
+		return nil, err
+	}
+
+	if err := ValidatePattern("subject", subject, "^(user|org|mch|scim)_\\w{27}$"); err != nil {
+		return nil, err
+	}
+
+	if type_ != nil {
+		if err := ValidateLength("type", *type_, LengthOpts{Min: Ptr[int](3), Max: Ptr[int](25)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if description != nil && description.Value != nil {
+		if err := ValidateLength("description", string(*description.Value), LengthOpts{Max: Ptr[int](255)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if createdBy != nil && createdBy.Value != nil {
+		if err := ValidatePattern("created_by", string(*createdBy.Value), "^user_\\w{27}$"); err != nil {
+			return nil, err
+		}
+	}
+
+	if secondsUntilExpiration != nil && secondsUntilExpiration.Value != nil {
+		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration.Value, RangeOpts{ExclusiveMin: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[CreateApiKeyResponse](ctx, &clientConfig, "POST", "/api_keys", &RequestOpts{
+		Body: map[string]any{
+			"name":                     name,
+			"subject":                  subject,
+			"type":                     type_,
+			"description":              description,
+			"claims":                   claims,
+			"scopes":                   scopes,
+			"created_by":               createdBy,
+			"seconds_until_expiration": secondsUntilExpiration,
+		},
+		OperationID: "CreateApiKey",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type ListApiKeysParams struct {
+	Subject        string
+	Type_          *string
+	IncludeInvalid *string
+	Limit          *float64
+	Offset         *NullableValue[float64]
+	Query          *string
+}
+
+// ListApiKeys lists API keys associated with a specified subject. Use `include_invalid` to control whether invalid keys are included, and use `query` to filter the results. Use `limit` and `offset` to paginate the results.
+func ListApiKeys(ctx context.Context, clientConfig ClientConfig, params ListApiKeysParams, opts ...RequestOption) (*ListApiKeysResponse, error) {
+	subject := params.Subject
+	type_ := params.Type_
+	includeInvalid := params.IncludeInvalid
+	limit := params.Limit
+	offset := params.Offset
+	query := params.Query
+
+	if err := ValidatePattern("subject", subject, "^(user|org|mch|scim)_\\w{27}$"); err != nil {
+		return nil, err
+	}
+
+	if type_ != nil {
+		if err := ValidateLength("type", *type_, LengthOpts{Min: Ptr[int](3)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if limit != nil {
+		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](100)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if offset != nil && offset.Value != nil {
+		if err := ValidateRange("offset", *offset.Value, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[ListApiKeysResponse](ctx, &clientConfig, "GET", "/api_keys", &RequestOpts{
+		Query: map[string]any{
+			"subject":         QueryValue{Value: subject, Style: "form", Explode: true},
+			"type":            QueryValue{Value: type_, Style: "form", Explode: true},
+			"include_invalid": QueryValue{Value: includeInvalid, Style: "form", Explode: true},
+			"limit":           QueryValue{Value: limit, Style: "form", Explode: true},
+			"offset":          QueryValue{Value: offset, Style: "form", Explode: true},
+			"query":           QueryValue{Value: query, Style: "form", Explode: true},
+		},
+		OperationID: "ListApiKeys",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type GetApiKeyParams struct {
+	ApiKeyID string
+}
+
+// GetApiKey retrieves an API key by its identifier. Supply the key ID in the path using either the `ak_` or `api_key_` prefix followed by 32 hexadecimal characters. The response contains the key's configuration and status.
+func GetApiKey(ctx context.Context, clientConfig ClientConfig, params GetApiKeyParams, opts ...RequestOption) (*GetApiKeyResponse, error) {
+	apiKeyID := params.ApiKeyID
+
+	if err := ValidatePattern("apiKeyID", apiKeyID, "^(ak|api_key)_[0-9A-Fa-f]{32}$"); err != nil {
+		return nil, err
+	}
+
+	resp, err := DoCfg[GetApiKeyResponse](ctx, &clientConfig, "GET", fmt.Sprintf("/api_keys/%s", EncodePathSegment(apiKeyID)), &RequestOpts{
+		OperationID: "GetApiKey",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type UpdateApiKeyParams struct {
+	ApiKeyID               string
+	Claims                 *any
+	Scopes                 *[]string
+	Description            *NullableValue[string]
+	Subject                *string
+	SecondsUntilExpiration *NullableValue[float64]
+}
+
+// UpdateApiKey updates configurable properties of an API key. Include only the fields you want to change, such as `scopes`, `description`, `subject`, or `seconds_until_expiration`. The response contains the updated API key object.
+func UpdateApiKey(ctx context.Context, clientConfig ClientConfig, params UpdateApiKeyParams, opts ...RequestOption) (*UpdateApiKeyResponse, error) {
+	apiKeyID := params.ApiKeyID
+	claims := params.Claims
+	scopes := params.Scopes
+	description := params.Description
+	subject := params.Subject
+	secondsUntilExpiration := params.SecondsUntilExpiration
+
+	if err := ValidatePattern("apiKeyID", apiKeyID, "^(ak|api_key)_[0-9A-Fa-f]{32}$"); err != nil {
+		return nil, err
+	}
+
+	if description != nil && description.Value != nil {
+		if err := ValidateLength("description", string(*description.Value), LengthOpts{Max: Ptr[int](255)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if subject != nil {
+		if err := ValidatePattern("subject", *subject, "^(user|org|mch|scim)_\\w{27}$"); err != nil {
+			return nil, err
+		}
+	}
+
+	if secondsUntilExpiration != nil && secondsUntilExpiration.Value != nil {
+		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration.Value, RangeOpts{ExclusiveMin: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[UpdateApiKeyResponse](ctx, &clientConfig, "PATCH", fmt.Sprintf("/api_keys/%s", EncodePathSegment(apiKeyID)), &RequestOpts{
+		Body: map[string]any{
+			"claims":                   claims,
+			"scopes":                   scopes,
+			"description":              description,
+			"subject":                  subject,
+			"seconds_until_expiration": secondsUntilExpiration,
+		},
+		OperationID: "UpdateApiKey",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type DeleteApiKeyParams struct {
+	ApiKeyID string
+}
+
+// DeleteApiKey deletes an API key identified by its ID. Supply the identifier using the `ak_` or `api_key_` prefix followed by 32 hexadecimal characters. The response confirms that the key was deleted.
+func DeleteApiKey(ctx context.Context, clientConfig ClientConfig, params DeleteApiKeyParams, opts ...RequestOption) (*DeleteApiKeyResponse, error) {
+	apiKeyID := params.ApiKeyID
+
+	if err := ValidatePattern("apiKeyID", apiKeyID, "^(ak|api_key)_[0-9A-Fa-f]{32}$"); err != nil {
+		return nil, err
+	}
+
+	resp, err := DoCfg[DeleteApiKeyResponse](ctx, &clientConfig, "DELETE", fmt.Sprintf("/api_keys/%s", EncodePathSegment(apiKeyID)), &RequestOpts{
+		OperationID: "DeleteApiKey",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
 type CreateApiKeyResponse struct {
 	Object           CreateApiKeyResponseObjectEnum `json:"object"`
 	Id               string                         `json:"id"`
@@ -353,336 +589,3 @@ type DeleteApiKeyResponseObjectEnum string
 const (
 	DeleteApiKeyResponseObjectEnumApiKey DeleteApiKeyResponseObjectEnum = "api_key"
 )
-
-type GetApiKeySecretResponse struct {
-	Secret string `json:"secret"`
-}
-
-func (value *GetApiKeySecretResponse) UnmarshalJSON(data []byte) error {
-	type GetApiKeySecretResponseAlias GetApiKeySecretResponse
-	var decoded GetApiKeySecretResponseAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = GetApiKeySecretResponse(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"secret"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"secret"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewGetApiKeySecretResponse returns a validated GetApiKeySecretResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewGetApiKeySecretResponse(fields GetApiKeySecretResponse) (*GetApiKeySecretResponse, error) {
-	return ConstructModel(fields)
-}
-
-type RevokeApiKeyResponse struct {
-	Object           RevokeApiKeyResponseObjectEnum `json:"object"`
-	Id               string                         `json:"id"`
-	Type             string                         `json:"type"`
-	Subject          string                         `json:"subject"`
-	Name             string                         `json:"name"`
-	Description      *NullableValue[string]         `json:"description,omitempty"`
-	Claims           NullableValue[any]             `json:"claims"`
-	Scopes           []string                       `json:"scopes"`
-	Revoked          bool                           `json:"revoked"`
-	RevocationReason NullableValue[string]          `json:"revocation_reason"`
-	Expired          bool                           `json:"expired"`
-	// Expiration The timestamp for when the API key will expire, in milliseconds
-	Expiration NullableValue[float64] `json:"expiration"`
-	CreatedBy  NullableValue[string]  `json:"created_by"`
-	// LastUsedAt The timestamp for when the API key was last used, in milliseconds
-	LastUsedAt NullableValue[float64] `json:"last_used_at"`
-	// CreatedAt The timestamp for when the API key was created, in milliseconds
-	CreatedAt float64 `json:"created_at"`
-	// UpdatedAt The timestamp for when the API key was last updated, in milliseconds
-	UpdatedAt float64 `json:"updated_at"`
-}
-
-func (value *RevokeApiKeyResponse) UnmarshalJSON(data []byte) error {
-	type RevokeApiKeyResponseAlias RevokeApiKeyResponse
-	var decoded RevokeApiKeyResponseAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = RevokeApiKeyResponse(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "id", "type", "subject", "name", "claims", "scopes", "revoked", "revocation_reason", "expired", "expiration", "created_by", "last_used_at", "created_at", "updated_at"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "id", "type", "subject", "name", "scopes", "revoked", "expired", "created_at", "updated_at"}); err != nil {
-		return err
-	}
-	if err := ValidatePattern("id", value.Id, "^ak_[0-9A-Fa-f]{32}$"); err != nil {
-		return err
-	}
-	if err := ValidateLength("type", value.Type, LengthOpts{Min: Ptr[int](3)}); err != nil {
-		return err
-	}
-	if err := ValidatePattern("subject", value.Subject, "^(user|org|mch)_\\w{27}$"); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["description"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Description = &NullableValue[string]{}
-	}
-	return nil
-}
-
-// NewRevokeApiKeyResponse returns a validated RevokeApiKeyResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewRevokeApiKeyResponse(fields RevokeApiKeyResponse) (*RevokeApiKeyResponse, error) {
-	return ConstructModel(fields)
-}
-
-type RevokeApiKeyResponseObjectEnum string
-
-const (
-	RevokeApiKeyResponseObjectEnumApiKey RevokeApiKeyResponseObjectEnum = "api_key"
-)
-
-type VerifyApiKeyResponse struct {
-	Object           VerifyApiKeyResponseObjectEnum `json:"object"`
-	Id               string                         `json:"id"`
-	Type             string                         `json:"type"`
-	Subject          string                         `json:"subject"`
-	Name             string                         `json:"name"`
-	Description      *NullableValue[string]         `json:"description,omitempty"`
-	Claims           NullableValue[any]             `json:"claims"`
-	Scopes           []string                       `json:"scopes"`
-	Revoked          bool                           `json:"revoked"`
-	RevocationReason NullableValue[string]          `json:"revocation_reason"`
-	Expired          bool                           `json:"expired"`
-	// Expiration The timestamp for when the API key will expire, in milliseconds
-	Expiration NullableValue[float64] `json:"expiration"`
-	CreatedBy  NullableValue[string]  `json:"created_by"`
-	// LastUsedAt The timestamp for when the API key was last used, in milliseconds
-	LastUsedAt NullableValue[float64] `json:"last_used_at"`
-	// CreatedAt The timestamp for when the API key was created, in milliseconds
-	CreatedAt float64 `json:"created_at"`
-	// UpdatedAt The timestamp for when the API key was last updated, in milliseconds
-	UpdatedAt float64 `json:"updated_at"`
-}
-
-func (value *VerifyApiKeyResponse) UnmarshalJSON(data []byte) error {
-	type VerifyApiKeyResponseAlias VerifyApiKeyResponse
-	var decoded VerifyApiKeyResponseAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = VerifyApiKeyResponse(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"object", "id", "type", "subject", "name", "claims", "scopes", "revoked", "revocation_reason", "expired", "expiration", "created_by", "last_used_at", "created_at", "updated_at"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"object", "id", "type", "subject", "name", "scopes", "revoked", "expired", "created_at", "updated_at"}); err != nil {
-		return err
-	}
-	if err := ValidatePattern("id", value.Id, "^ak_[0-9A-Fa-f]{32}$"); err != nil {
-		return err
-	}
-	if err := ValidateLength("type", value.Type, LengthOpts{Min: Ptr[int](3)}); err != nil {
-		return err
-	}
-	if err := ValidatePattern("subject", value.Subject, "^(user|org|mch)_\\w{27}$"); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["description"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Description = &NullableValue[string]{}
-	}
-	return nil
-}
-
-// NewVerifyApiKeyResponse returns a validated VerifyApiKeyResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewVerifyApiKeyResponse(fields VerifyApiKeyResponse) (*VerifyApiKeyResponse, error) {
-	return ConstructModel(fields)
-}
-
-type VerifyApiKeyResponseObjectEnum string
-
-const (
-	VerifyApiKeyResponseObjectEnumApiKey VerifyApiKeyResponseObjectEnum = "api_key"
-)
-
-type CreateApiKeyParams struct {
-	Name                   string
-	Subject                string
-	Type_                  *string
-	Description            *NullableValue[string]
-	Claims                 *any
-	Scopes                 *[]string
-	CreatedBy              *NullableValue[string]
-	SecondsUntilExpiration *NullableValue[float64]
-}
-
-// CreateApiKey creates an API key for the specified subject. Supply `name` and `subject`, and provide optional claims, scopes, creator, and expiration settings as needed. The response includes the key secret, so handle it as a credential.
-func CreateApiKey(ctx context.Context, clientConfig ClientConfig, params CreateApiKeyParams, opts ...RequestOption) (*CreateApiKeyResponse, error) {
-	name := params.Name
-	subject := params.Subject
-	type_ := params.Type_
-	description := params.Description
-	claims := params.Claims
-	scopes := params.Scopes
-	createdBy := params.CreatedBy
-	secondsUntilExpiration := params.SecondsUntilExpiration
-
-	if err := ValidateLength("name", name, LengthOpts{Min: Ptr[int](3)}); err != nil {
-		return nil, err
-	}
-	if err := ValidatePattern("name", name, "^(\\S(.*\\S)?)?$"); err != nil {
-		return nil, err
-	}
-
-	if err := ValidatePattern("subject", subject, "^(user|org|mch|scim)_\\w{27}$"); err != nil {
-		return nil, err
-	}
-
-	if type_ != nil {
-		if err := ValidateLength("type", *type_, LengthOpts{Min: Ptr[int](3), Max: Ptr[int](25)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if description != nil && description.Value != nil {
-		if err := ValidateLength("description", string(*description.Value), LengthOpts{Max: Ptr[int](255)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if createdBy != nil && createdBy.Value != nil {
-		if err := ValidatePattern("created_by", string(*createdBy.Value), "^user_\\w{27}$"); err != nil {
-			return nil, err
-		}
-	}
-
-	if secondsUntilExpiration != nil && secondsUntilExpiration.Value != nil {
-		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration.Value, RangeOpts{ExclusiveMin: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[CreateApiKeyResponse](ctx, &clientConfig, "POST", "/api_keys", &RequestOpts{
-		Body: map[string]any{
-			"name":                     name,
-			"subject":                  subject,
-			"type":                     type_,
-			"description":              description,
-			"claims":                   claims,
-			"scopes":                   scopes,
-			"created_by":               createdBy,
-			"seconds_until_expiration": secondsUntilExpiration,
-		},
-		OperationID: "CreateApiKey",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type ListApiKeysParams struct {
-	Subject        string
-	Type_          *string
-	IncludeInvalid *string
-	Limit          *float64
-	Offset         *NullableValue[float64]
-	Query          *string
-}
-
-// ListApiKeys lists API keys associated with a specified subject. Use `include_invalid` to control whether invalid keys are included, and use `query` to filter the results. Use `limit` and `offset` to paginate the results.
-func ListApiKeys(ctx context.Context, clientConfig ClientConfig, params ListApiKeysParams, opts ...RequestOption) (*ListApiKeysResponse, error) {
-	subject := params.Subject
-	type_ := params.Type_
-	includeInvalid := params.IncludeInvalid
-	limit := params.Limit
-	offset := params.Offset
-	query := params.Query
-
-	if err := ValidatePattern("subject", subject, "^(user|org|mch|scim)_\\w{27}$"); err != nil {
-		return nil, err
-	}
-
-	if type_ != nil {
-		if err := ValidateLength("type", *type_, LengthOpts{Min: Ptr[int](3)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if limit != nil {
-		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](100)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if offset != nil && offset.Value != nil {
-		if err := ValidateRange("offset", *offset.Value, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[ListApiKeysResponse](ctx, &clientConfig, "GET", "/api_keys", &RequestOpts{
-		Query: map[string]any{
-			"subject":         QueryValue{Value: subject, Style: "form", Explode: true},
-			"type":            QueryValue{Value: type_, Style: "form", Explode: true},
-			"include_invalid": QueryValue{Value: includeInvalid, Style: "form", Explode: true},
-			"limit":           QueryValue{Value: limit, Style: "form", Explode: true},
-			"offset":          QueryValue{Value: offset, Style: "form", Explode: true},
-			"query":           QueryValue{Value: query, Style: "form", Explode: true},
-		},
-		OperationID: "ListApiKeys",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type GetApiKeyParams struct {
-	ApiKeyID string
-}
-
-// GetApiKey retrieves an API key by its identifier. Supply the key ID in the path using either the `ak_` or `api_key_` prefix followed by 32 hexadecimal characters. The response contains the key's configuration and status.
-func GetApiKey(ctx context.Context, clientConfig ClientConfig, params GetApiKeyParams, opts ...RequestOption) (*GetApiKeyResponse, error) {
-	apiKeyID := params.ApiKeyID
-
-	if err := ValidatePattern("apiKeyID", apiKeyID, "^(ak|api_key)_[0-9A-Fa-f]{32}$"); err != nil {
-		return nil, err
-	}
-
-	resp, err := DoCfg[GetApiKeyResponse](ctx, &clientConfig, "GET", fmt.Sprintf("/api_keys/%s", EncodePathSegment(apiKeyID)), &RequestOpts{
-		OperationID: "GetApiKey",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type UpdateApiKeyParams struct {
-	ApiKeyID               string
-	Claims                 *any
-	Scopes                 *[]string
-	Description            *NullableValue[string]
-	Subject                *string
-	SecondsUntilExpiration *NullableValue[float64]
-}

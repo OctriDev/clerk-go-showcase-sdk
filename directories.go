@@ -9,99 +9,6 @@ import (
 	"fmt"
 )
 
-type CreateDirectoryGroupRoleMappings struct {
-	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
-	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
-	// ScimGroupId The legacy name for `directory_group_id`. Send either one, or both with the same value; sending both with different values is rejected.
-	ScimGroupId *string `json:"scim_group_id,omitempty"`
-	// DirectoryGroupDisplayName Optional display name for the group.
-	DirectoryGroupDisplayName *string `json:"directory_group_display_name,omitempty"`
-	// ScimGroupDisplayName The legacy name for `directory_group_display_name`. Send either one, or both with the same value; sending both with different values is rejected.
-	ScimGroupDisplayName *string `json:"scim_group_display_name,omitempty"`
-	// RoleId The organization role ID to assign to members of the group.
-	RoleId string `json:"role_id"`
-	// Precedence The precedence for this mapping. If omitted, precedence is assigned by array order.
-	Precedence *int64 `json:"precedence,omitempty"`
-}
-
-func (value *CreateDirectoryGroupRoleMappings) UnmarshalJSON(data []byte) error {
-	type CreateDirectoryGroupRoleMappingsAlias CreateDirectoryGroupRoleMappings
-	var decoded CreateDirectoryGroupRoleMappingsAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateDirectoryGroupRoleMappings(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"role_id"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"role_id"}); err != nil {
-		return err
-	}
-	if value.DirectoryGroupDisplayName != nil {
-		if err := ValidateLength("directory_group_display_name", *value.DirectoryGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
-			return err
-		}
-	}
-	if value.ScimGroupDisplayName != nil {
-		if err := ValidateLength("scim_group_display_name", *value.ScimGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
-			return err
-		}
-	}
-	if value.Precedence != nil {
-		if err := ValidateRange("precedence", *value.Precedence, RangeOpts{Min: Ptr[float64](1)}); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// NewCreateDirectoryGroupRoleMappings returns a validated CreateDirectoryGroupRoleMappings built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateDirectoryGroupRoleMappings(fields CreateDirectoryGroupRoleMappings) (*CreateDirectoryGroupRoleMappings, error) {
-	return ConstructModel(fields)
-}
-
-type ReplaceDirectoryGroupRoleMappingsMappings struct {
-	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
-	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
-	// ScimGroupId The legacy name for `directory_group_id`. Send either one, or both with the same value; sending both with different values is rejected.
-	ScimGroupId *string `json:"scim_group_id,omitempty"`
-	// RoleId The ID of the organization role to assign to members of the group.
-	RoleId string `json:"role_id"`
-}
-
-func (value *ReplaceDirectoryGroupRoleMappingsMappings) UnmarshalJSON(data []byte) error {
-	type ReplaceDirectoryGroupRoleMappingsMappingsAlias ReplaceDirectoryGroupRoleMappingsMappings
-	var decoded ReplaceDirectoryGroupRoleMappingsMappingsAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = ReplaceDirectoryGroupRoleMappingsMappings(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"role_id"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"role_id"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewReplaceDirectoryGroupRoleMappingsMappings returns a validated ReplaceDirectoryGroupRoleMappingsMappings built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewReplaceDirectoryGroupRoleMappingsMappings(fields ReplaceDirectoryGroupRoleMappingsMappings) (*ReplaceDirectoryGroupRoleMappingsMappings, error) {
-	return ConstructModel(fields)
-}
-
 type ListDirectoriesParams struct {
 	Limit  *int64
 	Offset *int64
@@ -437,4 +344,97 @@ func DeleteDirectoryGroupRoleMapping(ctx context.Context, clientConfig ClientCon
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+type CreateDirectoryGroupRoleMappings struct {
+	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
+	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
+	// ScimGroupId The legacy name for `directory_group_id`. Send either one, or both with the same value; sending both with different values is rejected.
+	ScimGroupId *string `json:"scim_group_id,omitempty"`
+	// DirectoryGroupDisplayName Optional display name for the group.
+	DirectoryGroupDisplayName *string `json:"directory_group_display_name,omitempty"`
+	// ScimGroupDisplayName The legacy name for `directory_group_display_name`. Send either one, or both with the same value; sending both with different values is rejected.
+	ScimGroupDisplayName *string `json:"scim_group_display_name,omitempty"`
+	// RoleId The organization role ID to assign to members of the group.
+	RoleId string `json:"role_id"`
+	// Precedence The precedence for this mapping. If omitted, precedence is assigned by array order.
+	Precedence *int64 `json:"precedence,omitempty"`
+}
+
+func (value *CreateDirectoryGroupRoleMappings) UnmarshalJSON(data []byte) error {
+	type CreateDirectoryGroupRoleMappingsAlias CreateDirectoryGroupRoleMappings
+	var decoded CreateDirectoryGroupRoleMappingsAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateDirectoryGroupRoleMappings(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"role_id"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"role_id"}); err != nil {
+		return err
+	}
+	if value.DirectoryGroupDisplayName != nil {
+		if err := ValidateLength("directory_group_display_name", *value.DirectoryGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
+			return err
+		}
+	}
+	if value.ScimGroupDisplayName != nil {
+		if err := ValidateLength("scim_group_display_name", *value.ScimGroupDisplayName, LengthOpts{Max: Ptr[int](255)}); err != nil {
+			return err
+		}
+	}
+	if value.Precedence != nil {
+		if err := ValidateRange("precedence", *value.Precedence, RangeOpts{Min: Ptr[float64](1)}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// NewCreateDirectoryGroupRoleMappings returns a validated CreateDirectoryGroupRoleMappings built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateDirectoryGroupRoleMappings(fields CreateDirectoryGroupRoleMappings) (*CreateDirectoryGroupRoleMappings, error) {
+	return ConstructModel(fields)
+}
+
+type ReplaceDirectoryGroupRoleMappingsMappings struct {
+	// DirectoryGroupId The group ID from the identity provider. Exactly one of `directory_group_id` or `scim_group_id` is required.
+	DirectoryGroupId *string `json:"directory_group_id,omitempty"`
+	// ScimGroupId The legacy name for `directory_group_id`. Send either one, or both with the same value; sending both with different values is rejected.
+	ScimGroupId *string `json:"scim_group_id,omitempty"`
+	// RoleId The ID of the organization role to assign to members of the group.
+	RoleId string `json:"role_id"`
+}
+
+func (value *ReplaceDirectoryGroupRoleMappingsMappings) UnmarshalJSON(data []byte) error {
+	type ReplaceDirectoryGroupRoleMappingsMappingsAlias ReplaceDirectoryGroupRoleMappingsMappings
+	var decoded ReplaceDirectoryGroupRoleMappingsMappingsAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = ReplaceDirectoryGroupRoleMappingsMappings(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"role_id"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"role_id"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewReplaceDirectoryGroupRoleMappingsMappings returns a validated ReplaceDirectoryGroupRoleMappingsMappings built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewReplaceDirectoryGroupRoleMappingsMappings(fields ReplaceDirectoryGroupRoleMappingsMappings) (*ReplaceDirectoryGroupRoleMappingsMappings, error) {
+	return ConstructModel(fields)
 }

@@ -9,124 +9,6 @@ import (
 	"fmt"
 )
 
-// CreateSAMLConnectionAttributeMapping Define the attribute name mapping between Identity Provider and Clerk's user properties
-type CreateSAMLConnectionAttributeMapping struct {
-	UserId       *string `json:"user_id,omitempty"`
-	EmailAddress *string `json:"email_address,omitempty"`
-	FirstName    *string `json:"first_name,omitempty"`
-	LastName     *string `json:"last_name,omitempty"`
-}
-
-// NewCreateSAMLConnectionAttributeMapping returns a validated CreateSAMLConnectionAttributeMapping built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateSAMLConnectionAttributeMapping(fields CreateSAMLConnectionAttributeMapping) (*CreateSAMLConnectionAttributeMapping, error) {
-	return ConstructModel(fields)
-}
-
-// CreateSAMLConnectionLoginHint Configuration for the login_hint sent to the IdP on SSO sign-in
-type CreateSAMLConnectionLoginHint struct {
-	// Mode Controls the login_hint sent to the IdP on SSO sign-in
-	Mode CreateSAMLConnectionLoginHintModeEnum `json:"mode"`
-	// Source The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute
-	Source *string `json:"source,omitempty"`
-}
-
-func (value *CreateSAMLConnectionLoginHint) UnmarshalJSON(data []byte) error {
-	type CreateSAMLConnectionLoginHintAlias CreateSAMLConnectionLoginHint
-	var decoded CreateSAMLConnectionLoginHintAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateSAMLConnectionLoginHint(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"mode"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"mode"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewCreateSAMLConnectionLoginHint returns a validated CreateSAMLConnectionLoginHint built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateSAMLConnectionLoginHint(fields CreateSAMLConnectionLoginHint) (*CreateSAMLConnectionLoginHint, error) {
-	return ConstructModel(fields)
-}
-
-// CreateSAMLConnectionLoginHintModeEnum Controls the login_hint sent to the IdP on SSO sign-in
-type CreateSAMLConnectionLoginHintModeEnum string
-
-const (
-	CreateSAMLConnectionLoginHintModeEnumEmailAddress    CreateSAMLConnectionLoginHintModeEnum = "email_address"
-	CreateSAMLConnectionLoginHintModeEnumCustomAttribute CreateSAMLConnectionLoginHintModeEnum = "custom_attribute"
-	CreateSAMLConnectionLoginHintModeEnumOff             CreateSAMLConnectionLoginHintModeEnum = "off"
-)
-
-// UpdateSAMLConnectionAttributeMapping Define the attribute name mapping between Identity Provider and Clerk's user properties
-type UpdateSAMLConnectionAttributeMapping struct {
-	UserId       *string `json:"user_id,omitempty"`
-	EmailAddress *string `json:"email_address,omitempty"`
-	FirstName    *string `json:"first_name,omitempty"`
-	LastName     *string `json:"last_name,omitempty"`
-}
-
-// NewUpdateSAMLConnectionAttributeMapping returns a validated UpdateSAMLConnectionAttributeMapping built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewUpdateSAMLConnectionAttributeMapping(fields UpdateSAMLConnectionAttributeMapping) (*UpdateSAMLConnectionAttributeMapping, error) {
-	return ConstructModel(fields)
-}
-
-// UpdateSAMLConnectionLoginHint Configuration for the login_hint sent to the IdP on SSO sign-in
-type UpdateSAMLConnectionLoginHint struct {
-	// Mode Controls the login_hint sent to the IdP on SSO sign-in
-	Mode UpdateSAMLConnectionLoginHintModeEnum `json:"mode"`
-	// Source The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute
-	Source *string `json:"source,omitempty"`
-}
-
-func (value *UpdateSAMLConnectionLoginHint) UnmarshalJSON(data []byte) error {
-	type UpdateSAMLConnectionLoginHintAlias UpdateSAMLConnectionLoginHint
-	var decoded UpdateSAMLConnectionLoginHintAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = UpdateSAMLConnectionLoginHint(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"mode"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"mode"}); err != nil {
-		return err
-	}
-	return nil
-}
-
-// NewUpdateSAMLConnectionLoginHint returns a validated UpdateSAMLConnectionLoginHint built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewUpdateSAMLConnectionLoginHint(fields UpdateSAMLConnectionLoginHint) (*UpdateSAMLConnectionLoginHint, error) {
-	return ConstructModel(fields)
-}
-
-// UpdateSAMLConnectionLoginHintModeEnum Controls the login_hint sent to the IdP on SSO sign-in
-type UpdateSAMLConnectionLoginHintModeEnum string
-
-const (
-	UpdateSAMLConnectionLoginHintModeEnumEmailAddress    UpdateSAMLConnectionLoginHintModeEnum = "email_address"
-	UpdateSAMLConnectionLoginHintModeEnumCustomAttribute UpdateSAMLConnectionLoginHintModeEnum = "custom_attribute"
-	UpdateSAMLConnectionLoginHintModeEnumOff             UpdateSAMLConnectionLoginHintModeEnum = "off"
-)
-
 type ListSAMLConnectionsParams struct {
 	Limit          *int64
 	Offset         *int64
@@ -467,3 +349,121 @@ func DeleteSAMLConnection(ctx context.Context, clientConfig ClientConfig, params
 	}
 	return &resp.Data, nil
 }
+
+// CreateSAMLConnectionAttributeMapping Define the attribute name mapping between Identity Provider and Clerk's user properties
+type CreateSAMLConnectionAttributeMapping struct {
+	UserId       *string `json:"user_id,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty"`
+	FirstName    *string `json:"first_name,omitempty"`
+	LastName     *string `json:"last_name,omitempty"`
+}
+
+// NewCreateSAMLConnectionAttributeMapping returns a validated CreateSAMLConnectionAttributeMapping built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateSAMLConnectionAttributeMapping(fields CreateSAMLConnectionAttributeMapping) (*CreateSAMLConnectionAttributeMapping, error) {
+	return ConstructModel(fields)
+}
+
+// CreateSAMLConnectionLoginHint Configuration for the login_hint sent to the IdP on SSO sign-in
+type CreateSAMLConnectionLoginHint struct {
+	// Mode Controls the login_hint sent to the IdP on SSO sign-in
+	Mode CreateSAMLConnectionLoginHintModeEnum `json:"mode"`
+	// Source The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute
+	Source *string `json:"source,omitempty"`
+}
+
+func (value *CreateSAMLConnectionLoginHint) UnmarshalJSON(data []byte) error {
+	type CreateSAMLConnectionLoginHintAlias CreateSAMLConnectionLoginHint
+	var decoded CreateSAMLConnectionLoginHintAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateSAMLConnectionLoginHint(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"mode"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"mode"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewCreateSAMLConnectionLoginHint returns a validated CreateSAMLConnectionLoginHint built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateSAMLConnectionLoginHint(fields CreateSAMLConnectionLoginHint) (*CreateSAMLConnectionLoginHint, error) {
+	return ConstructModel(fields)
+}
+
+// CreateSAMLConnectionLoginHintModeEnum Controls the login_hint sent to the IdP on SSO sign-in
+type CreateSAMLConnectionLoginHintModeEnum string
+
+const (
+	CreateSAMLConnectionLoginHintModeEnumEmailAddress    CreateSAMLConnectionLoginHintModeEnum = "email_address"
+	CreateSAMLConnectionLoginHintModeEnumCustomAttribute CreateSAMLConnectionLoginHintModeEnum = "custom_attribute"
+	CreateSAMLConnectionLoginHintModeEnumOff             CreateSAMLConnectionLoginHintModeEnum = "off"
+)
+
+// UpdateSAMLConnectionAttributeMapping Define the attribute name mapping between Identity Provider and Clerk's user properties
+type UpdateSAMLConnectionAttributeMapping struct {
+	UserId       *string `json:"user_id,omitempty"`
+	EmailAddress *string `json:"email_address,omitempty"`
+	FirstName    *string `json:"first_name,omitempty"`
+	LastName     *string `json:"last_name,omitempty"`
+}
+
+// NewUpdateSAMLConnectionAttributeMapping returns a validated UpdateSAMLConnectionAttributeMapping built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewUpdateSAMLConnectionAttributeMapping(fields UpdateSAMLConnectionAttributeMapping) (*UpdateSAMLConnectionAttributeMapping, error) {
+	return ConstructModel(fields)
+}
+
+// UpdateSAMLConnectionLoginHint Configuration for the login_hint sent to the IdP on SSO sign-in
+type UpdateSAMLConnectionLoginHint struct {
+	// Mode Controls the login_hint sent to the IdP on SSO sign-in
+	Mode UpdateSAMLConnectionLoginHintModeEnum `json:"mode"`
+	// Source The user public_metadata key whose value is sent as the login_hint when mode is custom_attribute
+	Source *string `json:"source,omitempty"`
+}
+
+func (value *UpdateSAMLConnectionLoginHint) UnmarshalJSON(data []byte) error {
+	type UpdateSAMLConnectionLoginHintAlias UpdateSAMLConnectionLoginHint
+	var decoded UpdateSAMLConnectionLoginHintAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = UpdateSAMLConnectionLoginHint(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"mode"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"mode"}); err != nil {
+		return err
+	}
+	return nil
+}
+
+// NewUpdateSAMLConnectionLoginHint returns a validated UpdateSAMLConnectionLoginHint built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewUpdateSAMLConnectionLoginHint(fields UpdateSAMLConnectionLoginHint) (*UpdateSAMLConnectionLoginHint, error) {
+	return ConstructModel(fields)
+}
+
+// UpdateSAMLConnectionLoginHintModeEnum Controls the login_hint sent to the IdP on SSO sign-in
+type UpdateSAMLConnectionLoginHintModeEnum string
+
+const (
+	UpdateSAMLConnectionLoginHintModeEnumEmailAddress    UpdateSAMLConnectionLoginHintModeEnum = "email_address"
+	UpdateSAMLConnectionLoginHintModeEnumCustomAttribute UpdateSAMLConnectionLoginHintModeEnum = "custom_attribute"
+	UpdateSAMLConnectionLoginHintModeEnumOff             UpdateSAMLConnectionLoginHintModeEnum = "off"
+)

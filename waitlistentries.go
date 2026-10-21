@@ -10,47 +10,6 @@ import (
 	"fmt"
 )
 
-type CreateBulkWaitlistEntriesModel struct {
-	// EmailAddress The email address to add to the waitlist
-	EmailAddress string `json:"email_address"`
-	// Notify Optional flag which denotes whether a confirmation email should be sent to the given email address.
-	// Defaults to `true`.
-	Notify *NullableValue[bool] `json:"notify,omitempty"`
-}
-
-func (value *CreateBulkWaitlistEntriesModel) UnmarshalJSON(data []byte) error {
-	type CreateBulkWaitlistEntriesModelAlias CreateBulkWaitlistEntriesModel
-	var decoded CreateBulkWaitlistEntriesModelAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateBulkWaitlistEntriesModel(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"email_address"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"email_address"}); err != nil {
-		return err
-	}
-	if err := ValidateEmail("email_address", value.EmailAddress); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Notify = &NullableValue[bool]{}
-	}
-	return nil
-}
-
-// NewCreateBulkWaitlistEntriesModel returns a validated CreateBulkWaitlistEntriesModel built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateBulkWaitlistEntriesModel(fields CreateBulkWaitlistEntriesModel) (*CreateBulkWaitlistEntriesModel, error) {
-	return ConstructModel(fields)
-}
-
 type ListWaitlistEntriesParams struct {
 	Limit   *int64
 	Offset  *int64
@@ -246,4 +205,45 @@ func RejectWaitlistEntry(ctx context.Context, clientConfig ClientConfig, params 
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+type CreateBulkWaitlistEntriesModel struct {
+	// EmailAddress The email address to add to the waitlist
+	EmailAddress string `json:"email_address"`
+	// Notify Optional flag which denotes whether a confirmation email should be sent to the given email address.
+	// Defaults to `true`.
+	Notify *NullableValue[bool] `json:"notify,omitempty"`
+}
+
+func (value *CreateBulkWaitlistEntriesModel) UnmarshalJSON(data []byte) error {
+	type CreateBulkWaitlistEntriesModelAlias CreateBulkWaitlistEntriesModel
+	var decoded CreateBulkWaitlistEntriesModelAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateBulkWaitlistEntriesModel(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"email_address"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"email_address"}); err != nil {
+		return err
+	}
+	if err := ValidateEmail("email_address", value.EmailAddress); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Notify = &NullableValue[bool]{}
+	}
+	return nil
+}
+
+// NewCreateBulkWaitlistEntriesModel returns a validated CreateBulkWaitlistEntriesModel built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateBulkWaitlistEntriesModel(fields CreateBulkWaitlistEntriesModel) (*CreateBulkWaitlistEntriesModel, error) {
+	return ConstructModel(fields)
 }

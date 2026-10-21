@@ -10,6 +10,171 @@ import (
 	"fmt"
 )
 
+type CreateM2MTokenParams struct {
+	TokenFormat            *string
+	SecondsUntilExpiration *NullableValue[float64]
+	Claims                 *any
+	MinRemainingTtlSeconds *int64
+}
+
+// CreateM2MToken creates a new M2M token for the machine associated with the Machine Secret Key used to authenticate the request. Use `token_format` to choose opaque or JWT format and `seconds_until_expiration` to set the token lifetime. Set `min_remaining_ttl_seconds` to reuse an eligible existing opaque token instead of minting a new one.
+//
+// Creates a new M2M Token. Must be authenticated via a Machine Secret Key.
+//
+// Parameters:
+//
+//	minRemainingTtlSeconds: Enables server-side token reuse for opaque-format
+//	tokens. When set, if a non-revoked, non-expired M2M token already exists for
+//	this machine with identical `claims` and `scopes` and at least this many
+//	seconds of remaining lifetime, that existing token is returned and no new
+//	token is minted. Use this when caching tokens in application memory across
+//	requests is impractical — for example, in serverless functions, short-lived
+//	job workers, or autoscaling containers that churn faster than the token TTL.
+//	Pooling at the server collapses many redundant create calls into reuse of a
+//	single live token, which is the recommended pattern for high-volume M2M
+//	traffic. Must be strictly less than the effective token lifetime — that is,
+//	`seconds_until_expiration` when provided, or the machine's default TTL
+//	otherwise. A value greater than or equal to the lifetime is rejected with a
+//	400, since no freshly-minted token would ever satisfy the requirement. Only
+//	applies to opaque-format tokens (`token_format` defaults to `opaque`).
+//	JWT-format tokens are stateless and are never deduplicated.
+func CreateM2MToken(ctx context.Context, clientConfig ClientConfig, params CreateM2MTokenParams, opts ...RequestOption) (*CreateM2MTokenResponse, error) {
+	tokenFormat := params.TokenFormat
+	secondsUntilExpiration := params.SecondsUntilExpiration
+	claims := params.Claims
+	minRemainingTtlSeconds := params.MinRemainingTtlSeconds
+
+	if secondsUntilExpiration != nil && secondsUntilExpiration.Value != nil {
+		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration.Value, RangeOpts{ExclusiveMin: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if minRemainingTtlSeconds != nil {
+		if err := ValidateRange("min_remaining_ttl_seconds", *minRemainingTtlSeconds, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[CreateM2MTokenResponse](ctx, &clientConfig, "POST", "/m2m_tokens", &RequestOpts{
+		Body: map[string]any{
+			"token_format":              tokenFormat,
+			"seconds_until_expiration":  secondsUntilExpiration,
+			"claims":                    claims,
+			"min_remaining_ttl_seconds": minRemainingTtlSeconds,
+		},
+		OperationID: "CreateM2MToken",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type GetM2MTokensParams struct {
+	Subject string
+	Revoked *NullableValue[bool]
+	Expired *NullableValue[bool]
+	Limit   *float64
+	Offset  *NullableValue[float64]
+}
+
+// GetM2MTokens lists stored opaque-format M2M tokens for a specific machine; stateless JWT-format tokens are not included. Use `revoked` and `expired` to filter the results, and `limit` and `offset` to control pagination. Authenticate with a Machine Secret Key to retrieve tokens for its machine, or a Clerk Secret Key to retrieve tokens for any machine in the instance.
+//
+// Fetches M2M tokens for a specific machine. Only tokens created with the opaque token format are returned by this endpoint. JWT-format M2M tokens are stateless and are not stored. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When fetching M2M tokens with a Machine Secret Key, only tokens associated with the authenticated machine can be retrieved. - When fetching M2M tokens with a Clerk Secret Key, tokens for any machine in the instance can be retrieved.
+func GetM2MTokens(ctx context.Context, clientConfig ClientConfig, params GetM2MTokensParams, opts ...RequestOption) (*GetM2MTokensResponse, error) {
+	subject := params.Subject
+	revoked := params.Revoked
+	expired := params.Expired
+	limit := params.Limit
+	offset := params.Offset
+
+	if err := ValidatePattern("subject", subject, "^mch_\\w{27}$"); err != nil {
+		return nil, err
+	}
+
+	if limit != nil {
+		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](100)}); err != nil {
+			return nil, err
+		}
+	}
+
+	if offset != nil && offset.Value != nil {
+		if err := ValidateRange("offset", *offset.Value, RangeOpts{Min: Ptr[float64](0)}); err != nil {
+			return nil, err
+		}
+	}
+
+	resp, err := DoCfg[GetM2MTokensResponse](ctx, &clientConfig, "GET", "/m2m_tokens", &RequestOpts{
+		Query: map[string]any{
+			"subject": QueryValue{Value: subject, Style: "form", Explode: true},
+			"revoked": QueryValue{Value: revoked, Style: "form", Explode: true},
+			"expired": QueryValue{Value: expired, Style: "form", Explode: true},
+			"limit":   QueryValue{Value: limit, Style: "form", Explode: true},
+			"offset":  QueryValue{Value: offset, Style: "form", Explode: true},
+		},
+		OperationID: "GetM2MTokens",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type RevokeM2MTokenParams struct {
+	M2mTokenId       string
+	RevocationReason *NullableValue[string]
+}
+
+// RevokeM2MToken revokes a stored opaque-format M2M token. Use `m2m_token_id` to identify the token and optionally provide a `revocation_reason`. JWT-format M2M tokens are stateless and cannot be revoked; a Machine Secret Key can revoke only tokens managed by its machine, while a Clerk Secret Key can revoke any token in the instance.
+//
+// Revokes a M2M Token. This endpoint only revokes stored opaque-format M2M tokens. JWT-format M2M tokens are stateless and cannot be revoked. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When revoking a M2M Token with a Machine Secret Key, the token must managed by the Machine associated with the Machine Secret Key. - When revoking a M2M Token with a Clerk Secret Key, any token on the Instance can be revoked.
+func RevokeM2MToken(ctx context.Context, clientConfig ClientConfig, params RevokeM2MTokenParams, opts ...RequestOption) (*RevokeM2MTokenResponse, error) {
+	m2mTokenId := params.M2mTokenId
+	revocationReason := params.RevocationReason
+
+	if err := ValidatePattern("m2m_token_id", m2mTokenId, "^mt_[0-9A-Fa-f]{32}$"); err != nil {
+		return nil, err
+	}
+
+	resp, err := DoCfg[RevokeM2MTokenResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/m2m_tokens/%s/revoke", EncodePathSegment(m2mTokenId)), &RequestOpts{
+		Body: map[string]any{
+			"revocation_reason": revocationReason,
+		},
+		OperationID: "RevokeM2MToken",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type VerifyM2MTokenParams struct {
+	Token string
+}
+
+// VerifyM2MToken verifies an M2M token and returns its token details when valid. Supply the token in the `token` field. A Machine Secret Key can verify a token only when it grants access to that machine, while a Clerk Secret Key can verify any token in the instance.
+//
+// Verifies a M2M Token. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When verifying a M2M Token with a Machine Secret Key, the token must be granted access to the Machine associated with the Machine Secret Key. - When verifying a M2M Token with a Clerk Secret Key, any token on the Instance can be verified.
+func VerifyM2MToken(ctx context.Context, clientConfig ClientConfig, params VerifyM2MTokenParams, opts ...RequestOption) (*VerifyM2MTokenResponse, error) {
+	token := params.Token
+
+	resp, err := DoCfg[VerifyM2MTokenResponse](ctx, &clientConfig, "POST", "/m2m_tokens/verify", &RequestOpts{
+		Body: map[string]any{
+			"token": token,
+		},
+		OperationID: "VerifyM2MToken",
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
 type CreateM2MTokenResponse struct {
 	Object           CreateM2MTokenResponseObjectEnum `json:"object"`
 	Id               string                           `json:"id"`
@@ -286,168 +451,3 @@ type VerifyM2MTokenResponseObjectEnum string
 const (
 	VerifyM2MTokenResponseObjectEnumMachineToMachineToken VerifyM2MTokenResponseObjectEnum = "machine_to_machine_token"
 )
-
-type CreateM2MTokenParams struct {
-	TokenFormat            *string
-	SecondsUntilExpiration *NullableValue[float64]
-	Claims                 *any
-	MinRemainingTtlSeconds *int64
-}
-
-// CreateM2MToken creates a new M2M token for the machine associated with the Machine Secret Key used to authenticate the request. Use `token_format` to choose opaque or JWT format and `seconds_until_expiration` to set the token lifetime. Set `min_remaining_ttl_seconds` to reuse an eligible existing opaque token instead of minting a new one.
-//
-// Creates a new M2M Token. Must be authenticated via a Machine Secret Key.
-//
-// Parameters:
-//
-//	minRemainingTtlSeconds: Enables server-side token reuse for opaque-format
-//	tokens. When set, if a non-revoked, non-expired M2M token already exists for
-//	this machine with identical `claims` and `scopes` and at least this many
-//	seconds of remaining lifetime, that existing token is returned and no new
-//	token is minted. Use this when caching tokens in application memory across
-//	requests is impractical — for example, in serverless functions, short-lived
-//	job workers, or autoscaling containers that churn faster than the token TTL.
-//	Pooling at the server collapses many redundant create calls into reuse of a
-//	single live token, which is the recommended pattern for high-volume M2M
-//	traffic. Must be strictly less than the effective token lifetime — that is,
-//	`seconds_until_expiration` when provided, or the machine's default TTL
-//	otherwise. A value greater than or equal to the lifetime is rejected with a
-//	400, since no freshly-minted token would ever satisfy the requirement. Only
-//	applies to opaque-format tokens (`token_format` defaults to `opaque`).
-//	JWT-format tokens are stateless and are never deduplicated.
-func CreateM2MToken(ctx context.Context, clientConfig ClientConfig, params CreateM2MTokenParams, opts ...RequestOption) (*CreateM2MTokenResponse, error) {
-	tokenFormat := params.TokenFormat
-	secondsUntilExpiration := params.SecondsUntilExpiration
-	claims := params.Claims
-	minRemainingTtlSeconds := params.MinRemainingTtlSeconds
-
-	if secondsUntilExpiration != nil && secondsUntilExpiration.Value != nil {
-		if err := ValidateRange("seconds_until_expiration", *secondsUntilExpiration.Value, RangeOpts{ExclusiveMin: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if minRemainingTtlSeconds != nil {
-		if err := ValidateRange("min_remaining_ttl_seconds", *minRemainingTtlSeconds, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[CreateM2MTokenResponse](ctx, &clientConfig, "POST", "/m2m_tokens", &RequestOpts{
-		Body: map[string]any{
-			"token_format":              tokenFormat,
-			"seconds_until_expiration":  secondsUntilExpiration,
-			"claims":                    claims,
-			"min_remaining_ttl_seconds": minRemainingTtlSeconds,
-		},
-		OperationID: "CreateM2MToken",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type GetM2MTokensParams struct {
-	Subject string
-	Revoked *NullableValue[bool]
-	Expired *NullableValue[bool]
-	Limit   *float64
-	Offset  *NullableValue[float64]
-}
-
-// GetM2MTokens lists stored opaque-format M2M tokens for a specific machine; stateless JWT-format tokens are not included. Use `revoked` and `expired` to filter the results, and `limit` and `offset` to control pagination. Authenticate with a Machine Secret Key to retrieve tokens for its machine, or a Clerk Secret Key to retrieve tokens for any machine in the instance.
-//
-// Fetches M2M tokens for a specific machine. Only tokens created with the opaque token format are returned by this endpoint. JWT-format M2M tokens are stateless and are not stored. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When fetching M2M tokens with a Machine Secret Key, only tokens associated with the authenticated machine can be retrieved. - When fetching M2M tokens with a Clerk Secret Key, tokens for any machine in the instance can be retrieved.
-func GetM2MTokens(ctx context.Context, clientConfig ClientConfig, params GetM2MTokensParams, opts ...RequestOption) (*GetM2MTokensResponse, error) {
-	subject := params.Subject
-	revoked := params.Revoked
-	expired := params.Expired
-	limit := params.Limit
-	offset := params.Offset
-
-	if err := ValidatePattern("subject", subject, "^mch_\\w{27}$"); err != nil {
-		return nil, err
-	}
-
-	if limit != nil {
-		if err := ValidateRange("limit", *limit, RangeOpts{Min: Ptr[float64](1), Max: Ptr[float64](100)}); err != nil {
-			return nil, err
-		}
-	}
-
-	if offset != nil && offset.Value != nil {
-		if err := ValidateRange("offset", *offset.Value, RangeOpts{Min: Ptr[float64](0)}); err != nil {
-			return nil, err
-		}
-	}
-
-	resp, err := DoCfg[GetM2MTokensResponse](ctx, &clientConfig, "GET", "/m2m_tokens", &RequestOpts{
-		Query: map[string]any{
-			"subject": QueryValue{Value: subject, Style: "form", Explode: true},
-			"revoked": QueryValue{Value: revoked, Style: "form", Explode: true},
-			"expired": QueryValue{Value: expired, Style: "form", Explode: true},
-			"limit":   QueryValue{Value: limit, Style: "form", Explode: true},
-			"offset":  QueryValue{Value: offset, Style: "form", Explode: true},
-		},
-		OperationID: "GetM2MTokens",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type RevokeM2MTokenParams struct {
-	M2mTokenId       string
-	RevocationReason *NullableValue[string]
-}
-
-// RevokeM2MToken revokes a stored opaque-format M2M token. Use `m2m_token_id` to identify the token and optionally provide a `revocation_reason`. JWT-format M2M tokens are stateless and cannot be revoked; a Machine Secret Key can revoke only tokens managed by its machine, while a Clerk Secret Key can revoke any token in the instance.
-//
-// Revokes a M2M Token. This endpoint only revokes stored opaque-format M2M tokens. JWT-format M2M tokens are stateless and cannot be revoked. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When revoking a M2M Token with a Machine Secret Key, the token must managed by the Machine associated with the Machine Secret Key. - When revoking a M2M Token with a Clerk Secret Key, any token on the Instance can be revoked.
-func RevokeM2MToken(ctx context.Context, clientConfig ClientConfig, params RevokeM2MTokenParams, opts ...RequestOption) (*RevokeM2MTokenResponse, error) {
-	m2mTokenId := params.M2mTokenId
-	revocationReason := params.RevocationReason
-
-	if err := ValidatePattern("m2m_token_id", m2mTokenId, "^mt_[0-9A-Fa-f]{32}$"); err != nil {
-		return nil, err
-	}
-
-	resp, err := DoCfg[RevokeM2MTokenResponse](ctx, &clientConfig, "POST", fmt.Sprintf("/m2m_tokens/%s/revoke", EncodePathSegment(m2mTokenId)), &RequestOpts{
-		Body: map[string]any{
-			"revocation_reason": revocationReason,
-		},
-		OperationID: "RevokeM2MToken",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
-type VerifyM2MTokenParams struct {
-	Token string
-}
-
-// VerifyM2MToken verifies an M2M token and returns its token details when valid. Supply the token in the `token` field. A Machine Secret Key can verify a token only when it grants access to that machine, while a Clerk Secret Key can verify any token in the instance.
-//
-// Verifies a M2M Token. This endpoint can be authenticated by either a Machine Secret Key or by a Clerk Secret Key. - When verifying a M2M Token with a Machine Secret Key, the token must be granted access to the Machine associated with the Machine Secret Key. - When verifying a M2M Token with a Clerk Secret Key, any token on the Instance can be verified.
-func VerifyM2MToken(ctx context.Context, clientConfig ClientConfig, params VerifyM2MTokenParams, opts ...RequestOption) (*VerifyM2MTokenResponse, error) {
-	token := params.Token
-
-	resp, err := DoCfg[VerifyM2MTokenResponse](ctx, &clientConfig, "POST", "/m2m_tokens/verify", &RequestOpts{
-		Body: map[string]any{
-			"token": token,
-		},
-		OperationID: "VerifyM2MToken",
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}

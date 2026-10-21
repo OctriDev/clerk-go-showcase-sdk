@@ -10,74 +10,6 @@ import (
 	"fmt"
 )
 
-type CreateOrganizationInvitationBulkModel struct {
-	// EmailAddress The email address of the new member that is going to be invited to the organization
-	EmailAddress string `json:"email_address"`
-	// InviterUserId The ID of the user that invites the new member to the organization.
-	// Must be an administrator in the organization.
-	InviterUserId *NullableValue[string] `json:"inviter_user_id,omitempty"`
-	// Role The role of the new member in the organization
-	Role string `json:"role"`
-	// PublicMetadata Metadata saved on the organization invitation, read-only from the Frontend API and fully accessible (read/write) from the Backend API.
-	// When the organization invitation is accepted, the metadata will be transferred to the newly created organization membership.
-	PublicMetadata *NullableValue[map[string]any] `json:"public_metadata,omitempty"`
-	// PrivateMetadata Metadata saved on the organization invitation, fully accessible (read/write) from the Backend API but not visible from the Frontend API.
-	// When the organization invitation is accepted, the metadata will be transferred to the newly created organization membership.
-	PrivateMetadata *NullableValue[map[string]any] `json:"private_metadata,omitempty"`
-	// RedirectUrl Optional URL that the invitee will be redirected to once they accept the invitation by clicking the join link in the invitation email.
-	RedirectUrl *NullableValue[string] `json:"redirect_url,omitempty"`
-	// ExpiresInDays The number of days the invitation will be valid for. By default, the invitation has a 30 days expire.
-	ExpiresInDays *NullableValue[int64] `json:"expires_in_days,omitempty"`
-	// Notify Optional flag which denotes whether an email invitation should be sent to the given email address.
-	// Defaults to `true`.
-	Notify *NullableValue[bool] `json:"notify,omitempty"`
-}
-
-func (value *CreateOrganizationInvitationBulkModel) UnmarshalJSON(data []byte) error {
-	type CreateOrganizationInvitationBulkModelAlias CreateOrganizationInvitationBulkModel
-	var decoded CreateOrganizationInvitationBulkModelAlias
-	if err := json.Unmarshal(data, &decoded); err != nil {
-		return err
-	}
-	*value = CreateOrganizationInvitationBulkModel(decoded)
-	var rawFields map[string]json.RawMessage
-	if err := json.Unmarshal(data, &rawFields); err != nil {
-		return err
-	}
-	if err := ValidateRequired(rawFields, []string{"email_address", "role"}); err != nil {
-		return err
-	}
-	if err := ValidateNotNull(rawFields, []string{"email_address", "role"}); err != nil {
-		return err
-	}
-	if raw, ok := rawFields["inviter_user_id"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.InviterUserId = &NullableValue[string]{}
-	}
-	if raw, ok := rawFields["public_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.PublicMetadata = &NullableValue[map[string]any]{}
-	}
-	if raw, ok := rawFields["private_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.PrivateMetadata = &NullableValue[map[string]any]{}
-	}
-	if raw, ok := rawFields["redirect_url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.RedirectUrl = &NullableValue[string]{}
-	}
-	if raw, ok := rawFields["expires_in_days"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.ExpiresInDays = &NullableValue[int64]{}
-	}
-	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
-		value.Notify = &NullableValue[bool]{}
-	}
-	return nil
-}
-
-// NewCreateOrganizationInvitationBulkModel returns a validated CreateOrganizationInvitationBulkModel built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateOrganizationInvitationBulkModel(fields CreateOrganizationInvitationBulkModel) (*CreateOrganizationInvitationBulkModel, error) {
-	return ConstructModel(fields)
-}
-
 type ListInstanceOrganizationInvitationsParams struct {
 	OrderBy *string
 	Status  *string
@@ -418,4 +350,72 @@ func RevokeOrganizationInvitation(ctx context.Context, clientConfig ClientConfig
 		return nil, err
 	}
 	return &resp.Data, nil
+}
+
+type CreateOrganizationInvitationBulkModel struct {
+	// EmailAddress The email address of the new member that is going to be invited to the organization
+	EmailAddress string `json:"email_address"`
+	// InviterUserId The ID of the user that invites the new member to the organization.
+	// Must be an administrator in the organization.
+	InviterUserId *NullableValue[string] `json:"inviter_user_id,omitempty"`
+	// Role The role of the new member in the organization
+	Role string `json:"role"`
+	// PublicMetadata Metadata saved on the organization invitation, read-only from the Frontend API and fully accessible (read/write) from the Backend API.
+	// When the organization invitation is accepted, the metadata will be transferred to the newly created organization membership.
+	PublicMetadata *NullableValue[map[string]any] `json:"public_metadata,omitempty"`
+	// PrivateMetadata Metadata saved on the organization invitation, fully accessible (read/write) from the Backend API but not visible from the Frontend API.
+	// When the organization invitation is accepted, the metadata will be transferred to the newly created organization membership.
+	PrivateMetadata *NullableValue[map[string]any] `json:"private_metadata,omitempty"`
+	// RedirectUrl Optional URL that the invitee will be redirected to once they accept the invitation by clicking the join link in the invitation email.
+	RedirectUrl *NullableValue[string] `json:"redirect_url,omitempty"`
+	// ExpiresInDays The number of days the invitation will be valid for. By default, the invitation has a 30 days expire.
+	ExpiresInDays *NullableValue[int64] `json:"expires_in_days,omitempty"`
+	// Notify Optional flag which denotes whether an email invitation should be sent to the given email address.
+	// Defaults to `true`.
+	Notify *NullableValue[bool] `json:"notify,omitempty"`
+}
+
+func (value *CreateOrganizationInvitationBulkModel) UnmarshalJSON(data []byte) error {
+	type CreateOrganizationInvitationBulkModelAlias CreateOrganizationInvitationBulkModel
+	var decoded CreateOrganizationInvitationBulkModelAlias
+	if err := json.Unmarshal(data, &decoded); err != nil {
+		return err
+	}
+	*value = CreateOrganizationInvitationBulkModel(decoded)
+	var rawFields map[string]json.RawMessage
+	if err := json.Unmarshal(data, &rawFields); err != nil {
+		return err
+	}
+	if err := ValidateRequired(rawFields, []string{"email_address", "role"}); err != nil {
+		return err
+	}
+	if err := ValidateNotNull(rawFields, []string{"email_address", "role"}); err != nil {
+		return err
+	}
+	if raw, ok := rawFields["inviter_user_id"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.InviterUserId = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["public_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.PublicMetadata = &NullableValue[map[string]any]{}
+	}
+	if raw, ok := rawFields["private_metadata"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.PrivateMetadata = &NullableValue[map[string]any]{}
+	}
+	if raw, ok := rawFields["redirect_url"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.RedirectUrl = &NullableValue[string]{}
+	}
+	if raw, ok := rawFields["expires_in_days"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.ExpiresInDays = &NullableValue[int64]{}
+	}
+	if raw, ok := rawFields["notify"]; ok && bytes.Equal(bytes.TrimSpace(raw), []byte("null")) {
+		value.Notify = &NullableValue[bool]{}
+	}
+	return nil
+}
+
+// NewCreateOrganizationInvitationBulkModel returns a validated CreateOrganizationInvitationBulkModel built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateOrganizationInvitationBulkModel(fields CreateOrganizationInvitationBulkModel) (*CreateOrganizationInvitationBulkModel, error) {
+	return ConstructModel(fields)
 }

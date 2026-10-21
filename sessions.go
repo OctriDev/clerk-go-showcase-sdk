@@ -8,42 +8,6 @@ import (
 	"fmt"
 )
 
-type CreateSessionTokenResponse struct {
-	Object *CreateSessionTokenResponseObjectEnum `json:"object,omitempty"`
-	Jwt    *string                               `json:"jwt,omitempty"`
-}
-
-// NewCreateSessionTokenResponse returns a validated CreateSessionTokenResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateSessionTokenResponse(fields CreateSessionTokenResponse) (*CreateSessionTokenResponse, error) {
-	return ConstructModel(fields)
-}
-
-type CreateSessionTokenResponseObjectEnum string
-
-const (
-	CreateSessionTokenResponseObjectEnumToken CreateSessionTokenResponseObjectEnum = "token"
-)
-
-type CreateSessionTokenFromTemplateResponse struct {
-	Object *CreateSessionTokenFromTemplateResponseObjectEnum `json:"object,omitempty"`
-	Jwt    *string                                           `json:"jwt,omitempty"`
-}
-
-// NewCreateSessionTokenFromTemplateResponse returns a validated CreateSessionTokenFromTemplateResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewCreateSessionTokenFromTemplateResponse(fields CreateSessionTokenFromTemplateResponse) (*CreateSessionTokenFromTemplateResponse, error) {
-	return ConstructModel(fields)
-}
-
-type CreateSessionTokenFromTemplateResponseObjectEnum string
-
-const (
-	CreateSessionTokenFromTemplateResponseObjectEnumToken CreateSessionTokenFromTemplateResponseObjectEnum = "token"
-)
-
 type ListSessionsParams struct {
 	ClientId  *string
 	UserId    *string
@@ -339,3 +303,39 @@ func CreateSessionTokenFromTemplate(ctx context.Context, clientConfig ClientConf
 	}
 	return &resp.Data, nil
 }
+
+type CreateSessionTokenResponse struct {
+	Object *CreateSessionTokenResponseObjectEnum `json:"object,omitempty"`
+	Jwt    *string                               `json:"jwt,omitempty"`
+}
+
+// NewCreateSessionTokenResponse returns a validated CreateSessionTokenResponse built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateSessionTokenResponse(fields CreateSessionTokenResponse) (*CreateSessionTokenResponse, error) {
+	return ConstructModel(fields)
+}
+
+type CreateSessionTokenResponseObjectEnum string
+
+const (
+	CreateSessionTokenResponseObjectEnumToken CreateSessionTokenResponseObjectEnum = "token"
+)
+
+type CreateSessionTokenFromTemplateResponse struct {
+	Object *CreateSessionTokenFromTemplateResponseObjectEnum `json:"object,omitempty"`
+	Jwt    *string                                           `json:"jwt,omitempty"`
+}
+
+// NewCreateSessionTokenFromTemplateResponse returns a validated CreateSessionTokenFromTemplateResponse built from named fields.
+// Optional fields may be left unset; a value that violates the schema is
+// reported as *SdkValidationError.
+func NewCreateSessionTokenFromTemplateResponse(fields CreateSessionTokenFromTemplateResponse) (*CreateSessionTokenFromTemplateResponse, error) {
+	return ConstructModel(fields)
+}
+
+type CreateSessionTokenFromTemplateResponseObjectEnum string
+
+const (
+	CreateSessionTokenFromTemplateResponseObjectEnumToken CreateSessionTokenFromTemplateResponseObjectEnum = "token"
+)

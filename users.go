@@ -8,69 +8,6 @@ import (
 	"fmt"
 )
 
-type VerifyPasswordResponse struct {
-	Verified *bool `json:"verified,omitempty"`
-}
-
-// NewVerifyPasswordResponse returns a validated VerifyPasswordResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewVerifyPasswordResponse(fields VerifyPasswordResponse) (*VerifyPasswordResponse, error) {
-	return ConstructModel(fields)
-}
-
-type VerifyTOTPResponse struct {
-	Verified *bool                           `json:"verified,omitempty"`
-	CodeType *VerifyTOTPResponseCodeTypeEnum `json:"code_type,omitempty"`
-}
-
-// NewVerifyTOTPResponse returns a validated VerifyTOTPResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewVerifyTOTPResponse(fields VerifyTOTPResponse) (*VerifyTOTPResponse, error) {
-	return ConstructModel(fields)
-}
-
-type VerifyTOTPResponseCodeTypeEnum string
-
-const (
-	VerifyTOTPResponseCodeTypeEnumTotp       VerifyTOTPResponseCodeTypeEnum = "totp"
-	VerifyTOTPResponseCodeTypeEnumBackupCode VerifyTOTPResponseCodeTypeEnum = "backup_code"
-)
-
-type DisableMFAResponse struct {
-	UserId *string `json:"user_id,omitempty"`
-}
-
-// NewDisableMFAResponse returns a validated DisableMFAResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewDisableMFAResponse(fields DisableMFAResponse) (*DisableMFAResponse, error) {
-	return ConstructModel(fields)
-}
-
-type DeleteBackupCodeResponse struct {
-	UserId *string `json:"user_id,omitempty"`
-}
-
-// NewDeleteBackupCodeResponse returns a validated DeleteBackupCodeResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewDeleteBackupCodeResponse(fields DeleteBackupCodeResponse) (*DeleteBackupCodeResponse, error) {
-	return ConstructModel(fields)
-}
-
-type DeleteTOTPResponse struct {
-	UserId *string `json:"user_id,omitempty"`
-}
-
-// NewDeleteTOTPResponse returns a validated DeleteTOTPResponse built from named fields.
-// Optional fields may be left unset; a value that violates the schema is
-// reported as *SdkValidationError.
-func NewDeleteTOTPResponse(fields DeleteTOTPResponse) (*DeleteTOTPResponse, error) {
-	return ConstructModel(fields)
-}
-
 type ListUsersParams struct {
 	EmailAddress       *[]string
 	PhoneNumber        *[]string
@@ -515,162 +452,6 @@ func CreateUser(ctx context.Context, clientConfig ClientConfig, params CreateUse
 	return &resp.Data, nil
 }
 
-type GetUsersCountParams struct {
-	EmailAddress       *[]string
-	PhoneNumber        *[]string
-	ExternalId         *[]string
-	Username           *[]string
-	Web3Wallet         *[]string
-	UserId             *[]string
-	OrganizationId     *[]string
-	Query              *string
-	EmailAddressQuery  *string
-	PhoneNumberQuery   *string
-	UsernameQuery      *string
-	NameQuery          *string
-	Banned             *bool
-	LastActiveAtBefore *int64
-	LastActiveAtAfter  *int64
-	LastActiveAtSince  *int64
-	CreatedAtBefore    *int64
-	CreatedAtAfter     *int64
-	LastSignInAtBefore *int64
-	LastSignInAtAfter  *int64
-	Provider           *string
-	ProviderUserId     *[]string
-}
-
-// GetUsersCount returns a total count of all users that match the given filtering criteria.
-//
-// Parameters:
-//
-//	emailAddress: Counts users with the specified email addresses. Accepts up to
-//	100 email addresses. Any email addresses not found are ignored.
-//	phoneNumber: Counts users with the specified phone numbers. Accepts up to
-//	100 phone numbers. Any phone numbers not found are ignored.
-//	externalId: Counts users with the specified external IDs. Accepts up to 100
-//	external IDs. Any external IDs not found are ignored.
-//	username: Counts users with the specified usernames. Accepts up to 100
-//	usernames. Any usernames not found are ignored.
-//	web3Wallet: Counts users with the specified web3 wallet addresses. Accepts
-//	up to 100 web3 wallet addresses. Any web3 wallet addresses not found are
-//	ignored.
-//	userId: Counts users with the user IDs specified. Accepts up to 100 user
-//	IDs. Any user IDs not found are ignored.
-//	organizationId: Returns users that have memberships to the given
-//	organizations. For each organization ID, the `+` and `-` can be prepended to
-//	the ID, which denote whether the respective organization should be included
-//	or excluded from the result set. Accepts up to 100 organization IDs.
-//	query: Counts users that match the given query. For possible matches, we
-//	check the email addresses, phone numbers, usernames, web3 wallets, user IDs,
-//	first and last names. The query value doesn't need to match the exact value
-//	you are looking for, it is capable of partial matches as well.
-//	emailAddressQuery: Counts users with emails that match the given query, via
-//	case-insensitive partial match. For example, `email_address_query=ello` will
-//	match a user with the email `HELLO@example.com`, and will be included in the
-//	resulting count.
-//	phoneNumberQuery: Counts users with phone numbers that match the given
-//	query, via case-insensitive partial match. For example,
-//	`phone_number_query=555` will match a user with the phone number
-//	`+1555xxxxxxx`, and will be included in the resulting count.
-//	usernameQuery: Counts users with usernames that match the given query, via
-//	case-insensitive partial match. For example, `username_query=CoolUser` will
-//	match a user with the username `SomeCoolUser`, and will be included in the
-//	resulting count.
-//	nameQuery: Returns users with names that match the given query, via
-//	case-insensitive partial match.
-//	banned: Counts users which are either banned (`banned=true`) or not banned
-//	(`banned=false`).
-//	lastActiveAtBefore: Returns users whose last session activity was before the
-//	given date (with millisecond precision). Example: use 1700690400000 to
-//	retrieve users whose last session activity was before 2023-11-23.
-//	lastActiveAtAfter: Returns users whose last session activity was after the
-//	given date (with millisecond precision). Example: use 1700690400000 to
-//	retrieve users whose last session activity was after 2023-11-23.
-//	lastActiveAtSince: Returns users that had session activity since the given
-//	date. Example: use 1700690400000 to retrieve users that had session activity
-//	from 2023-11-23 until the current day. Deprecated in favor of
-//	`last_active_at_after`.
-//	createdAtBefore: Returns users who have been created before the given date
-//	(with millisecond precision). Example: use 1730160000000 to retrieve users
-//	who have been created before 2024-10-29.
-//	createdAtAfter: Returns users who have been created after the given date
-//	(with millisecond precision). Example: use 1730160000000 to retrieve users
-//	who have been created after 2024-10-29.
-//	lastSignInAtBefore: Counts users whose last sign-in was before the given
-//	date (with millisecond precision). Example: use 1700690400000 to count users
-//	whose last sign-in was before 2023-11-23.
-//	lastSignInAtAfter: Counts users whose last sign-in was after the given date
-//	(with millisecond precision). Example: use 1700690400000 to count users
-//	whose last sign-in was after 2023-11-23.
-//	provider: Counts users with external accounts for the specified OAuth
-//	provider. Must be used in combination with the `provider_user_id` parameter.
-//	For example, use `provider=oauth_google&provider_user_id=12345` to count
-//	users with Google provider user ID 12345. Accepts up to 100 providers.
-//	providerUserId: Counts users with the specified provider user IDs for a
-//	specific provider. Must be used in combination with the `provider`
-//	parameter. For example, use `provider=oauth_google&provider_user_id=12345`
-//	to count users with Google provider user ID 12345. Accepts up to 100
-//	provider user IDs. Any provider user IDs not found are ignored.
-func GetUsersCount(ctx context.Context, clientConfig ClientConfig, params GetUsersCountParams, opts ...RequestOption) (*TotalCount, error) {
-	emailAddress := params.EmailAddress
-	phoneNumber := params.PhoneNumber
-	externalId := params.ExternalId
-	username := params.Username
-	web3Wallet := params.Web3Wallet
-	userId := params.UserId
-	organizationId := params.OrganizationId
-	query := params.Query
-	emailAddressQuery := params.EmailAddressQuery
-	phoneNumberQuery := params.PhoneNumberQuery
-	usernameQuery := params.UsernameQuery
-	nameQuery := params.NameQuery
-	banned := params.Banned
-	lastActiveAtBefore := params.LastActiveAtBefore
-	lastActiveAtAfter := params.LastActiveAtAfter
-	lastActiveAtSince := params.LastActiveAtSince
-	createdAtBefore := params.CreatedAtBefore
-	createdAtAfter := params.CreatedAtAfter
-	lastSignInAtBefore := params.LastSignInAtBefore
-	lastSignInAtAfter := params.LastSignInAtAfter
-	provider := params.Provider
-	providerUserId := params.ProviderUserId
-
-	resp, err := DoCfg[TotalCount](ctx, &clientConfig, "GET", "/users/count", &RequestOpts{
-		Query: map[string]any{
-			"email_address":          QueryValue{Value: emailAddress, Style: "form", Explode: true},
-			"phone_number":           QueryValue{Value: phoneNumber, Style: "form", Explode: true},
-			"external_id":            QueryValue{Value: externalId, Style: "form", Explode: true},
-			"username":               QueryValue{Value: username, Style: "form", Explode: true},
-			"web3_wallet":            QueryValue{Value: web3Wallet, Style: "form", Explode: true},
-			"user_id":                QueryValue{Value: userId, Style: "form", Explode: true},
-			"organization_id":        QueryValue{Value: organizationId, Style: "form", Explode: true},
-			"query":                  QueryValue{Value: query, Style: "form", Explode: true},
-			"email_address_query":    QueryValue{Value: emailAddressQuery, Style: "form", Explode: true},
-			"phone_number_query":     QueryValue{Value: phoneNumberQuery, Style: "form", Explode: true},
-			"username_query":         QueryValue{Value: usernameQuery, Style: "form", Explode: true},
-			"name_query":             QueryValue{Value: nameQuery, Style: "form", Explode: true},
-			"banned":                 QueryValue{Value: banned, Style: "form", Explode: true},
-			"last_active_at_before":  QueryValue{Value: lastActiveAtBefore, Style: "form", Explode: true},
-			"last_active_at_after":   QueryValue{Value: lastActiveAtAfter, Style: "form", Explode: true},
-			"last_active_at_since":   QueryValue{Value: lastActiveAtSince, Style: "form", Explode: true},
-			"created_at_before":      QueryValue{Value: createdAtBefore, Style: "form", Explode: true},
-			"created_at_after":       QueryValue{Value: createdAtAfter, Style: "form", Explode: true},
-			"last_sign_in_at_before": QueryValue{Value: lastSignInAtBefore, Style: "form", Explode: true},
-			"last_sign_in_at_after":  QueryValue{Value: lastSignInAtAfter, Style: "form", Explode: true},
-			"provider":               QueryValue{Value: provider, Style: "form", Explode: true},
-			"provider_user_id":       QueryValue{Value: providerUserId, Style: "form", Explode: true},
-		},
-		OperationID: "GetUsersCount",
-		Errors:      ErrorDecoders{"422": decodeErrorData[ClerkErrors]},
-		Options:     opts,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return &resp.Data, nil
-}
-
 type GetUserParams struct {
 	UserId string
 }
@@ -723,4 +504,172 @@ type UpdateUserParams struct {
 	CreateOrganizationsLimit         *NullableValue[int64]
 	CreatedAt                        *NullableValue[string]
 	BypassClientTrust                *NullableValue[bool]
+}
+
+// UpdateUser update a user's attributes. You can set the user's primary contact identifiers (email address and phone numbers) by updating the `primary_email_address_id` and `primary_phone_number_id` attributes respectively. Both IDs should correspond to verified identifications that belong to the user. You can remove a user's username by setting the username attribute to null or the blank string "". As of API version 2026-05-12, this endpoint no longer accepts `public_metadata`, `private_metadata`, or `unsafe_metadata`. Use `PATCH /v1/users/{user_id}/metadata` to merge updates into existing metadata, or `PUT /v1/users/{user_id}/metadata` to replace a metadata field entirely.
+//
+// Parameters:
+//
+//	userId: The ID of the user to update
+//	externalId: The ID of the user as used in your external systems or your
+//	previous authentication solution. Must be unique across your instance.
+//	firstName: The first name to assign to the user
+//	lastName: The last name to assign to the user
+//	locale: The locale to assign to the user (e.g., "en-US", "fr-FR")
+//	timezone: The IANA timezone to assign to the user (e.g., "America/New_York",
+//	"Europe/Paris"). Set to null to clear it and allow automatic capture on a
+//	later trusted sign-in.
+//	primaryEmailAddressId: The ID of the email address to set as primary. It
+//	must be verified, and present on the current user.
+//	notifyPrimaryEmailAddressChanged: If set to `true`, the user will be
+//	notified that their primary email address has changed. By default, no
+//	notification is sent.
+//	primaryPhoneNumberId: The ID of the phone number to set as primary. It must
+//	be verified, and present on the current user.
+//	primaryWeb3WalletId: The ID of the web3 wallets to set as primary. It must
+//	be verified, and present on the current user.
+//	username: The username to give to the user. It must be unique across your
+//	instance.
+//	profileImageId: The ID of the image to set as the user's profile image
+//	password: The plaintext password to give the user. Must be at least 8
+//	characters long, and cannot be in any list of hacked passwords.
+//	passwordDigest: In case you already have the password digests and not the
+//	passwords, you can use them for the newly created user via this property.
+//	The digests should be generated with one of the supported algorithms. The
+//	hashing algorithm can be specified using the `password_hasher` property.
+//	passwordHasher: The hashing algorithm that was used to generate the password
+//	digest. The algorithms we support at the moment are
+//	[`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt),
+//	[`bcrypt_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/p
+//	asswords/), [`md5`](https://en.wikipedia.org/wiki/MD5), `pbkdf2_sha1`,
+//	`pbkdf2_sha256`,
+//	[`pbkdf2_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/p
+//	asswords/), `pbkdf2_sha512`, [`phpass`](https://www.openwall.com/phpass/),
+//	`md5_phpass`,
+//	[`scrypt_firebase`](https://firebaseopensource.com/projects/firebase/scrypt/
+//	),
+//	[`scrypt_werkzeug`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#wer
+//	kzeug.security.generate_password_hash),
+//	[`sha256`](https://en.wikipedia.org/wiki/SHA-2),
+//	[`ldap_ssha`](https://www.openldap.org/faq/data/cache/347.html), the
+//	[`argon2`](https://argon2.online/) variants: `argon2i` and `argon2id`,
+//	`sha512_symfony`, the SHA-512 variant of the
+//	[Symfony](https://symfony.com/doc/current/security/passwords.html) legacy
+//	hasher, and `pbkdf2_sha512_hex`, a variant of `pbkdf2_sha512` that accepts
+//	hex-encoded salt and hash. Each of the supported hashers expects the
+//	incoming digest to be in a particular format. See the [Clerk
+//	docs](https://clerk.com/docs/references/backend/user/create-user) for more
+//	information.
+//	skipPasswordChecks: Set it to `true` if you're updating the user's password
+//	and want to skip any password policy settings check. This parameter can only
+//	be used when providing a `password`.
+//	signOutOfOtherSessions: Set to `true` to sign out the user from all their
+//	active sessions once their password is updated. This parameter can only be
+//	used when providing a `password`.
+//	totpSecret: In case TOTP is configured on the instance, you can provide the
+//	secret to enable it on the specific user without the need to reset it.
+//	backupCodes: If Backup Codes are configured on the instance, you can provide
+//	them to enable it on the specific user without the need to reset them.
+//	deleteSelfEnabled: If true, the user can delete themselves with the Frontend
+//	API.
+//	createOrganizationEnabled: If true, the user can create organizations with
+//	the Frontend API.
+//	legalAcceptedAt: A custom timestamp denoting _when_ the user accepted legal
+//	requirements, specified in RFC3339 format.
+//	skipLegalChecks: When set to `true` all legal checks are skipped.
+//	createOrganizationsLimit: The maximum number of organizations the user can
+//	create. 0 means unlimited.
+//	createdAt: A custom date/time denoting _when_ the user signed up to the
+//	application.
+//	bypassClientTrust: When set to `true`, the user will bypass Device Trust
+//	checks during sign-in.
+func UpdateUser(ctx context.Context, clientConfig ClientConfig, params UpdateUserParams, opts ...RequestOption) (*User, error) {
+	userId := params.UserId
+	externalId := params.ExternalId
+	firstName := params.FirstName
+	lastName := params.LastName
+	locale := params.Locale
+	timezone := params.Timezone
+	primaryEmailAddressId := params.PrimaryEmailAddressId
+	notifyPrimaryEmailAddressChanged := params.NotifyPrimaryEmailAddressChanged
+	primaryPhoneNumberId := params.PrimaryPhoneNumberId
+	primaryWeb3WalletId := params.PrimaryWeb3WalletId
+	username := params.Username
+	profileImageId := params.ProfileImageId
+	password := params.Password
+	passwordDigest := params.PasswordDigest
+	passwordHasher := params.PasswordHasher
+	skipPasswordChecks := params.SkipPasswordChecks
+	signOutOfOtherSessions := params.SignOutOfOtherSessions
+	totpSecret := params.TotpSecret
+	backupCodes := params.BackupCodes
+	deleteSelfEnabled := params.DeleteSelfEnabled
+	createOrganizationEnabled := params.CreateOrganizationEnabled
+	legalAcceptedAt := params.LegalAcceptedAt
+	skipLegalChecks := params.SkipLegalChecks
+	createOrganizationsLimit := params.CreateOrganizationsLimit
+	createdAt := params.CreatedAt
+	bypassClientTrust := params.BypassClientTrust
+
+	resp, err := DoCfg[User](ctx, &clientConfig, "PATCH", fmt.Sprintf("/users/%s", EncodePathSegment(userId)), &RequestOpts{
+		Body: map[string]any{
+			"external_id":                          externalId,
+			"first_name":                           firstName,
+			"last_name":                            lastName,
+			"locale":                               locale,
+			"timezone":                             timezone,
+			"primary_email_address_id":             primaryEmailAddressId,
+			"notify_primary_email_address_changed": notifyPrimaryEmailAddressChanged,
+			"primary_phone_number_id":              primaryPhoneNumberId,
+			"primary_web3_wallet_id":               primaryWeb3WalletId,
+			"username":                             username,
+			"profile_image_id":                     profileImageId,
+			"password":                             password,
+			"password_digest":                      passwordDigest,
+			"password_hasher":                      passwordHasher,
+			"skip_password_checks":                 skipPasswordChecks,
+			"sign_out_of_other_sessions":           signOutOfOtherSessions,
+			"totp_secret":                          totpSecret,
+			"backup_codes":                         backupCodes,
+			"delete_self_enabled":                  deleteSelfEnabled,
+			"create_organization_enabled":          createOrganizationEnabled,
+			"legal_accepted_at":                    legalAcceptedAt,
+			"skip_legal_checks":                    skipLegalChecks,
+			"create_organizations_limit":           createOrganizationsLimit,
+			"created_at":                           createdAt,
+			"bypass_client_trust":                  bypassClientTrust,
+		},
+		OperationID: "UpdateUser",
+		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors], "409": decodeErrorData[ClerkErrors], "422": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
+}
+
+type DeleteUserParams struct {
+	UserId string
+}
+
+// DeleteUser deletes the specified user. Use `user_id` to identify the user to remove; the response confirms whether the deletion occurred.
+//
+// # Delete the specified user
+//
+// Parameters:
+//
+//	userId: The ID of the user to delete
+func DeleteUser(ctx context.Context, clientConfig ClientConfig, params DeleteUserParams, opts ...RequestOption) (*DeletedObject, error) {
+	userId := params.UserId
+
+	resp, err := DoCfg[DeletedObject](ctx, &clientConfig, "DELETE", fmt.Sprintf("/users/%s", EncodePathSegment(userId)), &RequestOpts{
+		OperationID: "DeleteUser",
+		Errors:      ErrorDecoders{"400": decodeErrorData[ClerkErrors], "401": decodeErrorData[ClerkErrors], "404": decodeErrorData[ClerkErrors]},
+		Options:     opts,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.Data, nil
 }
